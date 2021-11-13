@@ -1,0 +1,116 @@
+
+body {
+    background: #dbe3de;
+    background: -webkit-linear-gradient(to left, #ffffff, #dbe3de);
+    background: linear-gradient(to left, #ffffff, #dbe3de);
+}
+
+nav.navbar-my-style {
+    background-color: #dbe3de;
+    border-bottom-style: solid;
+    border-bottom-width: 5px;
+    border-bottom-color: black;
+}
+
+footer.footer-my-style {
+    background-color: black;
+}
+
+span.my-span-navbar {
+    margin-right: 10px;
+}
+
+div.my-div-container {
+    margin-top: 10px;
+}
+
+div.my-div-header{
+    margin-bottom: 5px;
+}
+
+div.my-form-div-row {
+    margin-bottom: 10px;
+}
+
+div.my-form-div-error {
+    color: #CC0000;
+}
+
+table.my-table-reservation {
+    table-layout: fixed;
+}
+
+table.my-table-border {
+    border: 3px solid black;
+}
+
+table th.my-table-reservation-room-list {
+    border: 1.5px solid black;
+    text-align: center;
+    vertical-align: middle;
+    width: 7.5%;
+}
+
+table th.my-table-reservation-header {
+    border: 1.5px solid black;
+    text-align: center;
+}
+
+table td.my-table-reservation-element {
+    border-top: 1.5px solid black;
+    background-color: #479e72;
+    border-radius: 15px;
+}
+
+table td.my-table-reservation-element-left {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+table td.my-table-reservation-element-right {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+table td.my-table-reservation-free-element {
+    border-top: 1.5px solid black;
+}
+
+table td a.my-table-reservation-cursor {
+    cursor: pointer;
+    color: black;
+}
+
+table tr.my-table-timetable {
+    height: 105px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+div.my-timetable-patient-element {
+    margin: 2.5%;
+    background-color: #479e72;
+    height: 35px;
+    width: 95%;
+    border: black solid 1px;
+    border-radius: 5px;
+    text-align: center;
+    padding: 5px;
+    cursor: alias;
+}
+
+.my-user-button {
+    margin: 0px 3px;
+    height: 37.5px;
+}
+
+div.my-timetable-user-element {
+    margin: 2.5%;
+    background-color: #479e72;
+    height: 35px;
+    width: 95%;
+    border: black solid 1px;
+    border-radius: 5px;
+    text-align: center;
+    padding: 5px;
+}
