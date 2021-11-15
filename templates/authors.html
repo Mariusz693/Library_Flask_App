@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %} Autorzy {% endblock %}
+{% block content %}
+    <div class="container div-my-container">
+        <table class="table">
+            <thead>
+                <tr class="d-flex flex-wrap">
+                    <th class="col-1">Lp.</th>
+                    <th class="col-4">Imię i nazwisko (pseudonim)</th>
+                    <th class="col-2">Data urodzenia</th>
+                    <th class="col-2">Data śmierci</th>
+                    <th class="col-1">Szczegóły</th>
+                    <th class="col-1">Edytuj</th>
+                    <th class="col-1">Usuń</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for author in authors_list %}
+                    <tr class="d-flex flex-wrap">
+                        <td class="col-1">{{ loop.index }}</td>
+                        <th class="col-4">{{ author.name }}</th>
+                        <td class="col-2">{% if author.date_of_birth %} {{ author.date_of_birth }} {% else %} brak danych {% endif %}</td>
+                        <td class="col-2">{% if author.date_of_death %} {{ author.date_of_death }} {% else %} brak danych {% endif %}</td>
+                        <td class="col-1">
+                            <a href="/author/{{ author.id }}">Sprawdź</a>
+                        </td>
+                        <td class="col-1">
+                            <a href="/edit_author/{{ author.id }}">Zmień</a>
+                        </td>
+                        <td class="col-1">
+                            <a href="/del_author/{{ author.id }}" class="text-danger">Usuń</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>             
+    </div>
+{% endblock content %}

@@ -1,3 +1,4 @@
+from enum import unique
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -52,11 +53,15 @@ class Author(db.Model):
     __tablename__ = 'authors'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=False)
+    name = db.Column(db.String(255), unique=True, nullable=False)
+    date_of_birth = db.Column(db.Date, nullable=True)
+    date_of_death = db.Column(db.Date, nullable=True)
     books = db.relationship('Book', backref='book', lazy=True)
 
-    def __init__(self, name):
+    def __init__(self, name, date_of_birth, date_of_death):
         self.name = name
+        self.date_of_birth = date_of_birth
+        self.date_of_death = date_of_death
 
     def __repr__(self):
         return '<id {}>'.format(self.id)

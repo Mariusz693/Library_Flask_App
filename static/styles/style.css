@@ -16,12 +16,22 @@ footer.footer-my-style {
     background-color: black;
 }
 
-span.my-span-navbar {
-    margin-right: 10px;
+div.div-my-container {
+    margin-top: 10px;
 }
 
-div.my-div-container {
-    margin-top: 10px;
+img.img-my-style {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+div.div-my-row{
+    margin-bottom: 20px;
+}
+
+/* 
+span.my-span-navbar {
+    margin-right: 10px;
 }
 
 div.my-div-header{
@@ -30,9 +40,9 @@ div.my-div-header{
 
 div.my-form-div-row {
     margin-bottom: 10px;
-}
+} */
 
-div.my-form-div-error {
+/* div.my-form-div-error {
     color: #CC0000;
 }
 
@@ -113,4 +123,4 @@ div.my-timetable-user-element {
     border-radius: 5px;
     text-align: center;
     padding: 5px;
-}
+} */
