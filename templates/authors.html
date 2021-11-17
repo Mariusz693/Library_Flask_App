@@ -16,19 +16,19 @@
             </thead>
             <tbody>
                 {% for author in authors_list %}
-                    <tr class="d-flex flex-wrap">
+                    <tr class="d-flex flex-wrap tr-my-table">
                         <td class="col-1">{{ loop.index }}</td>
                         <th class="col-4">{{ author.name }}</th>
                         <td class="col-2">{% if author.date_of_birth %} {{ author.date_of_birth }} {% else %} brak danych {% endif %}</td>
                         <td class="col-2">{% if author.date_of_death %} {{ author.date_of_death }} {% else %} brak danych {% endif %}</td>
                         <td class="col-1">
-                            <a href="/author/{{ author.id }}">Sprawdź</a>
+                            <a href="/details_author/{{ author.id }}/">Profil</a>
                         </td>
                         <td class="col-1">
-                            <a href="/edit_author/{{ author.id }}">Zmień</a>
+                            <a href="/edit_author/{{ author.id }}/">Zmień</a>
                         </td>
                         <td class="col-1">
-                            <a href="/del_author/{{ author.id }}" class="text-danger">Usuń</a>
+                            <a href="/delete_author/{{ author.id }}/" class="text-danger">Usuń</a>
                         </td>
                     </tr>
                 {% endfor %}

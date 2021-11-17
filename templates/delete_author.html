@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %} Usuń Autora {% endblock %}
+{% block content %}
+    <div class="container div-my-container">
+        <form method="POST">
+            <div class="mt-4 ml-4 mr-4">
+                <div class="row border-bottom border-3">
+                    <div class="col mb-2">
+                        <h4 class="color-header">{{ message }}</h4>
+                    </div>
+                    <div class="col d-flex justify-content-end mb-2">
+                        <button type="submit" class="btn btn-danger">Potwierdz</button>
+                        <div class="col-1"></div>
+                        <a href="/details_author/{{ author.id }}/" class="btn btn-success">Profil</a>
+                        <div class="col-1"></div>
+                        <a href="/authors/" class="btn btn-info">Autorzy</a>
+                    </div>
+                </div>
+                </br>                        
+                <div class="row div-my-row">
+                    <div class="col-sm-4">Imię i nazwisko (pseudonim):</div>
+                    <div class="col-sm-8">{{ author.name }}</div>
+                </div>
+                <div class="row div-my-row">
+                    <div class="col-sm-4">Data urodzenia:</div>
+                    <div class="col-sm-8">{% if author.date_of_birth %} {{ author.date_of_birth }} {% else %} brak danych {% endif %}</div>
+                </div>
+                <div class="row div-my-row">
+                    <div class="col-sm-4">Data śmierci:</div>
+                    <div class="col-sm-8">{% if author.date_of_death %} {{ author.date_of_death }} {% else %} brak danych {% endif %}</div>
+                </div>
+            </div>
+        </form>                
+    </div>
+    <div class="container div-my-container">
+        <img class="rounded mx-auto d-block img-thumbnail img-my-style" 
+        src="{{ url_for('static', filename='images/delete_author.jpg') }}" alt="Edit author photo">
+    </div>
+{% endblock content %}

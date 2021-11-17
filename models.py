@@ -28,7 +28,7 @@ class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     isbn = db.Column(db.String(13), unique=True, nullable=False)
     title = db.Column(db.String(255), nullable=False)
-    descripion = db.Column(db.Text)
+    description = db.Column(db.Text)
     is_loaned = db.Column(db.Boolean, default=False)
     author_id = db.Column(db.Integer, db.ForeignKey('authors.id', ondelete='CASCADE'), nullable=False)
     categories = db.relationship('Category', secondary=books_categories, lazy='subquery', backref=db.backref('books', lazy=True))

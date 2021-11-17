@@ -1,8 +1,8 @@
 {% extends "base.html" %}
-{% block title %} Dodaj Autora {% endblock %}
+{% block title %} Edytuj Autora {% endblock %}
 {% block content %}
     <div class="container div-my-container">
-        <form action="/add_author/" method="POST">
+        <form action="/edit_author/{{ author.id }}" method="POST">
             <div class="mt-4 ml-4 mr-4">
                 <div class="row border-bottom border-3">
                     <div class="col mb-2">
@@ -20,7 +20,7 @@
                         <label for="name" class="label-size col-form-label">Imię i nazwisko (pseudonim):</label>
                     </div>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" name="name" id="name" placeholder="Imię i nazwisko (pseudonim)"/>
+                        <input type="text" class="form-control" name="name" id="name" value="{{ author.name }}"/>
                     </div>
                 </div>
                 <div class="form-group row div-my-row">
@@ -28,7 +28,7 @@
                         <label for="date_of_birth" class="label-size col-form-label">Data urodzenia:</label>
                     </div>
                     <div class="col-sm-9">
-                        <input type="date" class="form-control" name="date_of_birth" id="date_of_birth"/>
+                        <input type="date" class="form-control" name="date_of_birth" id="date_of_birth"  value="{{ author.date_of_birth }}"/>
                     </div>
                 </div>
                 <div class="form-group row div-my-row">
@@ -36,7 +36,7 @@
                         <label for="date_of_death" class="label-size col-form-label">Data śmierci:</label>
                     </div>
                     <div class="col-sm-9">
-                        <input type="date" class="form-control" name="date_of_death" id="date_of_death"/>
+                        <input type="date" class="form-control" name="date_of_death" id="date_of_death" value="{{ author.date_of_death }}"/>
                     </div>
                 </div>
             </div>
@@ -44,6 +44,6 @@
     </div>
     <div class="container div-my-container">
         <img class="rounded mx-auto d-block img-thumbnail img-my-style" 
-        src="{{ url_for('static', filename='images/add_author.jpg') }}" alt="Add author photo">
+        src="{{ url_for('static', filename='images/edit_author.jpg') }}" alt="Edit author photo">
     </div>
 {% endblock content %}

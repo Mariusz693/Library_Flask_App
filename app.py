@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from models import db
@@ -49,10 +49,6 @@ def add_author():
         date_of_death = request.form.get('date_of_death') if request.form.get('date_of_death') else None
         if len(name) > 3:
             new_author = Author(name, date_of_birth, date_of_death)
-            
-            print(new_author)
-            print(new_author.date_of_birth)
-            print(new_author.date_of_death)
             try:
                 db.session.add(new_author)
                 db.session.commit()
@@ -66,6 +62,67 @@ def add_author():
     return render_template(
         'add_author.html',
         message=message
+        )
+
+
+@app.route("/edit_author/<int:id_author>/", methods=['GET', 'POST'])
+def edit_author(id_author):
+    author = Author.query.get_or_404(id_author)
+    message = f'Zmień wpis autora {author.name}'
+    if request.method == 'POST':
+        name = request.form.get('name')
+        date_of_birth = request.form.get('date_of_birth') if request.form.get('date_of_birth') else None
+        date_of_death = request.form.get('date_of_death') if request.form.get('date_of_death') else None
+        if len(name) > 3:
+            author.name = name
+            author.date_of_birth = date_of_birth
+            author.date_of_death = date_of_death
+            try:
+                db.session.commit()
+                message = f'Zmieniono wpis autora - {name}'
+            except IntegrityError:
+                db.session.rollback()
+                message = f'Wpis - {name} - już istnieje w bazie danych'
+        else:
+            message = 'Wpis autora zbyt krótki - nie zmieniono'    
+            
+    return render_template(
+        'edit_author.html',
+        message=message,
+        author=author
+        )
+
+
+@app.route("/details_author/<int:id_author>/")
+def details_author(id_author):
+    author = Author.query.get_or_404(id_author)
+    print(author.books)
+
+    return render_template(
+        'details_author.html',
+        author=author
+        )
+
+
+@app.route("/delete_author/<int:id_author>/", methods=['GET', 'POST'])
+def delete_author(id_author):
+    author = Author.query.get_or_404(id_author)
+    message = 'Potwierdź usunięcie profilu'
+    if request.method == 'POST':
+        try:
+            db.session.delete(author)
+            db.session.commit()
+
+            return redirect('/authors/')
+        
+        except IntegrityError:
+            db.session.rollback()
+            message = f'Błąd w usuwaniu profilu'
+        
+    return render_template(
+        'delete_author.html',
+        message=message,
+        author=author
         )
 
 
