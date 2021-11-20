@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from models import db
 from sqlalchemy.exc import IntegrityError
 # from flask_wtf import CSRFProtect, csrf
+from validators import validate_phone, validate_email
 
 load_dotenv()
 
@@ -96,7 +97,6 @@ def edit_author(id_author):
 @app.route("/details_author/<int:id_author>/")
 def details_author(id_author):
     author = Author.query.get_or_404(id_author)
-    print(author.books)
 
     return render_template(
         'details_author.html',
@@ -123,6 +123,38 @@ def delete_author(id_author):
         'delete_author.html',
         message=message,
         author=author
+        )
+
+
+@app.route("/add_client/", methods=['GET', 'POST'])
+def add_client():
+    message = 'Dodaj wpis nowego clienta'
+    if request.method == 'POST':
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
+        email = request.form.get('email')
+        phone_number = request.form.get('phone_number')
+        if first_name and last_name:
+            if phone_number == '' or validate_phone(phone_number):
+                if email and validate_email(email):
+                    new_client = Client(first_name, last_name, email, phone_number)
+                    try:
+                        db.session.add(new_client)
+                        db.session.commit()
+                        message = f'Dodano wpis nowego klinta - {new_client}'
+                    except IntegrityError:
+                        db.session.rollback()
+                        message = f'Podany email {email} już istnieje w bazie'
+                else:
+                    message = 'Brak adresu email lub źle podany'
+            else:
+                message = 'Numer telefonu źle podany'
+        else:
+            message = 'Brak imienia lub nawiska klienta'    
+            
+    return render_template(
+        'add_client.html',
+        message=message
         )
 
 
