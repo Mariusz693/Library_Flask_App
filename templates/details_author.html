@@ -23,11 +23,11 @@
                     </div>
                     <div class="row div-my-row">
                         <div class="col-sm-4">Data urodzenia:</div>
-                        <div class="col-sm-8">{{ author.date_of_birth }}</div>
+                        <div class="col-sm-8">{% if author.date_of_birth %} {{ author.date_of_birth }} {% else %} (brak danych) {% endif %}</div>
                     </div>
                     <div class="row div-my-row">
                         <div class="col-sm-4">Data śmierci:</div>
-                        <div class="col-sm-8">{{ author.date_of_death }}</div>
+                        <div class="col-sm-8">{% if author.date_of_death %} {{ author.date_of_death }} {% else %} (brak danych) {% endif %}</div>
                     </div>
                     <div class="row div-my-row">
                         <div class="col-sm-4">Utwory:</div>

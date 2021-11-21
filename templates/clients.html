@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %} Klienci {% endblock %}
+{% block content %}
+    <div class="container div-my-container">
+        <table class="table">
+            <thead>
+                <tr class="d-flex flex-wrap">
+                    <th class="col-1">Lp.</th>
+                    <th class="col-2">Imię</th>
+                    <th class="col-3">Nazwisko</th>
+                    <th class="col-3">Email</th>
+                    <th class="col-2">Nr. telefonu</th>
+                    <th class="col-1 text-center">Szczegóły</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for client in clients_list %}
+                    <tr class="d-flex flex-wrap tr-my-table">
+                        <td class="col-1">{{ loop.index }}</td>
+                        <th class="col-2">{{ client.first_name }}</th>
+                        <th class="col-3">{{ client.last_name }}</th>
+                        <td class="col-3">{{ client.email }}</td>
+                        <td class="col-2">{% if client.phone_number %} (+48) {{ client.phone_number }} {% else %} (brak danych) {% endif %}</td>
+                        <td class="col-1 text-center">
+                            <a href="/details_client/{{ client.id }}/">Profil</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>             
+    </div>
+{% endblock content %}

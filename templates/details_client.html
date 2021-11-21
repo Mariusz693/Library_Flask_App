@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %} Profil Klienta {% endblock %}
+{% block content %}
+    <div class="container div-my-container">
+        <div class="mt-4 ml-4 mr-4">
+            <div class="row border-bottom border-3 div-my-header">
+                <div class="col mb-2">
+                    <h4 class="color-header">Szczegóły profilu klienta</h4>
+                </div>
+                <div class="col d-flex justify-content-end mb-2">
+                    <a href="/edit_client/{{ client.id }}/" class="btn btn-success">Zmień</a>
+                    <div class="col-1"></div>
+                    <a href="/delete_client/{{ client.id }}/" class="btn btn-danger">Usuń</a>
+                    <div class="col-1"></div>
+                    <a href="/clients/" class="btn btn-info">Klienci</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-9">
+                    <div class="row div-my-row">
+                        <div class="col-sm-4">Imię:</div>
+                        <div class="col-sm-8">{{ client.first_name }}</div>
+                    </div>
+                    <div class="row div-my-row">
+                        <div class="col-sm-4">Nazwisko:</div>
+                        <div class="col-sm-8">{{ client.last_name }}</div>
+                    </div>
+                    <div class="row div-my-row">
+                        <div class="col-sm-4">Adres email:</div>
+                        <div class="col-sm-8">{{ client.email }}</div>
+                    </div>
+                    <div class="row div-my-row">
+                        <div class="col-sm-4">Numer telefonu:</div>
+                        <div class="col-sm-8">{% if client.phone_number %} (+48) {{ client.phone_number }} {% else %} (brak danych) {% endif %}</div>
+                    </div>
+                    <div class="row div-my-row">
+                        <div class="col-sm-4">Wypożyczone książki:</div>
+                        <div class="col-sm-8">
+                            <ul class="list-group">
+                                {% for book in client.books %}
+                                <li class="li-my-list">"{{ book.title }}", <a href='/details_book/{{ book.id }}/'>zobacz</a> </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <img class="rounded mx-auto d-block img-thumbnail" 
+                    src="{{ url_for('static', filename='images/details_client.jpg') }}" alt="Details client photo">
+                </div>
+            </div>
+        </div>                
+    </div>
+{% endblock content %}

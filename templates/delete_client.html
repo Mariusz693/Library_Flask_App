@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %} Usuń Autora {% endblock %}
+{% block title %} Usuń Klienta {% endblock %}
 {% block content %}
     <div class="container div-my-container">
         <div class="mt-4 ml-4 mr-4">
@@ -11,28 +11,32 @@
                     <div class="col d-flex justify-content-end mb-2">
                         <button type="submit" class="btn btn-danger">Potwierdz</button>
                         <div class="col-1"></div>
-                        <a href="/details_author/{{ author.id }}/" class="btn btn-success">Profil</a>
+                        <a href="/details_client/{{ client.id }}/" class="btn btn-success">Profil</a>
                         <div class="col-1"></div>
-                        <a href="/authors/" class="btn btn-info">Autorzy</a>
+                        <a href="/clients/" class="btn btn-info">Klienci</a>
                     </div>
                 </div>
-            </form>                       
+            </form>
             <div class="row div-my-row">
-                <div class="col-sm-3">Imię i nazwisko (pseudonim):</div>
-                <div class="col-sm-9">{{ author.name }}</div>
+                <div class="col-sm-3">Imię:</div>
+                <div class="col-sm-9">{{ client.first_name }}</div>
             </div>
             <div class="row div-my-row">
-                <div class="col-sm-3">Data urodzenia:</div>
-                <div class="col-sm-9">{% if author.date_of_birth %} {{ author.date_of_birth }} {% else %} (brak danych) {% endif %}</div>
+                <div class="col-sm-3">Nazwisko:</div>
+                <div class="col-sm-9">{{ client.last_name }}</div>
             </div>
             <div class="row div-my-row">
-                <div class="col-sm-3">Data śmierci:</div>
-                <div class="col-sm-9">{% if author.date_of_death %} {{ author.date_of_death }} {% else %} (brak danych) {% endif %}</div>
+                <div class="col-sm-3">Email:</div>
+                <div class="col-sm-9">{{ client.email }}</div>
+            </div>
+            <div class="row div-my-row">
+                <div class="col-sm-3">Numer telefonu (+48):</div>
+                <div class="col-sm-9">{% if client.phone_number %} {{ client.phone_number }} {% else %} (brak danych) {% endif %}</div>
             </div>
         </div>
         <div>
             <img class="rounded mx-auto d-block img-thumbnail img-my-style" 
-            src="{{ url_for('static', filename='images/delete_author.jpg') }}" alt="Delete author photo">      
+            src="{{ url_for('static', filename='images/delete_client.jpg') }}" alt="Delete client photo">      
         </div>
     </div>
 {% endblock content %}

@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %} Dodaj Klienta {% endblock %}
+{% block title %} Edytuj Klienta {% endblock %}
 {% block content %}
     <div class="container div-my-container">
         <div class="mt-4 ml-4 mr-4">
-            <form action="/add_client/" method="POST">
+            <form action="/edit_client/{{ client.id }}/" method="POST">
                 <div class="row border-bottom border-3 div-my-header">
                     <div class="col mb-2">
                         <h4 class="color-header">{{ message }}</h4>
@@ -19,7 +19,7 @@
                         <label for="first_name" class="label-size col-form-label">Imię:</label>
                     </div>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" name="first_name" id="first_name" placeholder="Imię"/>
+                        <input type="text" class="form-control" name="first_name" id="first_name" value="{{ client.first_name }}"/>
                     </div>
                 </div>
                 <div class="form-group row div-my-row">
@@ -27,7 +27,7 @@
                         <label for="last_name" class="label-size col-form-label">Nazwisko:</label>
                     </div>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Nazwisko"/>
+                        <input type="text" class="form-control" name="last_name" id="last_name" value="{{ client.last_name }}"/>
                     </div>
                 </div>
                 <div class="form-group row div-my-row">
@@ -35,7 +35,7 @@
                         <label for="email" class="label-size col-form-label">Email:</label>
                     </div>
                     <div class="col-sm-9">
-                        <input type="email" class="form-control" name="email" id="email" placeholder="Email"/>
+                        <input type="email" class="form-control" name="email" id="email" value="{{ client.email }}"/>
                     </div>
                 </div>
                 <div class="form-group row div-my-row">
@@ -43,14 +43,14 @@
                         <label for="phone_number" class="label-size col-form-label">Numer telefonu (+48):</label>
                     </div>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" name="phone_number" id="phone_number" minlength="9" maxlength="9" placeholder="Telefon, 9-cyfrowy"/>
+                        <input type="text" class="form-control" name="phone_number" id="phone_number" minlength="9" maxlength="9" value="{{ client.phone_number }}"/>
                     </div>
                 </div>
             </form>
         </div>
         <div>                
             <img class="rounded mx-auto d-block img-thumbnail img-my-style" 
-            src="{{ url_for('static', filename='images/add_client.jpg') }}" alt="Add client photo">
+            src="{{ url_for('static', filename='images/edit_client.jpg') }}" alt="Edit client photo">
         </div>
     </div>
 {% endblock content %}

@@ -38,7 +38,8 @@ def authors():
 
 @app.route("/clients/")
 def clients():
-    return render_template('index.html')
+    clients_list = Client.query.all()
+    return render_template('clients.html', clients_list=clients_list)
 
 
 @app.route("/add_author/", methods=['GET', 'POST'])
@@ -69,7 +70,7 @@ def add_author():
 @app.route("/edit_author/<int:id_author>/", methods=['GET', 'POST'])
 def edit_author(id_author):
     author = Author.query.get_or_404(id_author)
-    message = f'Zmień wpis autora {author.name}'
+    message = f'Zmień wpis autora - {author.name}'
     if request.method == 'POST':
         name = request.form.get('name')
         date_of_birth = request.form.get('date_of_birth') if request.form.get('date_of_birth') else None
@@ -94,20 +95,10 @@ def edit_author(id_author):
         )
 
 
-@app.route("/details_author/<int:id_author>/")
-def details_author(id_author):
-    author = Author.query.get_or_404(id_author)
-
-    return render_template(
-        'details_author.html',
-        author=author
-        )
-
-
 @app.route("/delete_author/<int:id_author>/", methods=['GET', 'POST'])
 def delete_author(id_author):
     author = Author.query.get_or_404(id_author)
-    message = 'Potwierdź usunięcie profilu'
+    message = 'Potwierdź usunięcie profilu autora'
     if request.method == 'POST':
         try:
             db.session.delete(author)
@@ -122,6 +113,16 @@ def delete_author(id_author):
     return render_template(
         'delete_author.html',
         message=message,
+        author=author
+        )
+
+
+@app.route("/details_author/<int:id_author>/")
+def details_author(id_author):
+    author = Author.query.get_or_404(id_author)
+
+    return render_template(
+        'details_author.html',
         author=author
         )
 
@@ -155,6 +156,75 @@ def add_client():
     return render_template(
         'add_client.html',
         message=message
+        )
+
+
+@app.route("/edit_client/<int:id_client>/", methods=['GET', 'POST'])
+def edit_client(id_client):
+    client = Client.query.get_or_404(id_client)
+    message = f'Zmień wpis clienta - {client}'
+    if request.method == 'POST':
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
+        email = request.form.get('email')
+        phone_number = request.form.get('phone_number')
+        if first_name and last_name:
+            if phone_number == '' or validate_phone(phone_number):
+                if email and validate_email(email):
+                    client.first_name = first_name
+                    client.last_name = last_name
+                    client.email = email
+                    client.phone_number = phone_number
+                    try:
+                        db.session.commit()
+                        message = f'Zmieniono wpis klinta - {client}'
+                    except IntegrityError:
+                        db.session.rollback()
+                        message = f'Podany email {email} już istnieje w bazie'
+                else:
+                    message = 'Brak adresu email lub źle podany'
+            else:
+                message = 'Numer telefonu źle podany'
+        else:
+            message = 'Brak imienia lub nawiska klienta'    
+        
+    return render_template(
+        'edit_client.html',
+        message=message,
+        client=client
+        )
+
+
+@app.route("/delete_client/<int:id_client>/", methods=['GET', 'POST'])
+def delete_client(id_client):
+    client = Client.query.get_or_404(id_client)
+    message = 'Potwierdź usunięcie profilu clienta'
+    if request.method == 'POST':
+        try:
+            db.session.delete(client)
+            db.session.commit()
+
+            return redirect('/clients/')
+        
+        except IntegrityError:
+            db.session.rollback()
+            message = f'Błąd w usuwaniu profilu'
+        
+    return render_template(
+        'delete_client.html',
+        message=message,
+        client=client
+        )
+        
+
+@app.route("/details_client/<int:id_client>/")
+def details_client(id_client):
+    client = Client.query.get_or_404(id_client)
+    print(client.books)
+
+    return render_template(
+        'details_client.html',
+        client=client
         )
 
 
