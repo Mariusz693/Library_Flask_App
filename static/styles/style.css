@@ -42,6 +42,20 @@ li.li-my-list {
     margin-left: 15px;
     margin-bottom: 10px;
 }
+
+button.button-my-cross {
+    color: darkred;
+    width: 70px;
+    border-radius: 5px;
+}
+
+button.button-my-dodaj {
+    background-color: darkgreen;
+    color: white;
+    width: 70px;
+    border-radius: 5px;
+}
+
 /* ul.ul-my-list {
     margin-left: 15px;
 } */

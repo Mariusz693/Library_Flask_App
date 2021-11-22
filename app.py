@@ -1,3 +1,4 @@
+from operator import le
 import os
 from flask import Flask, request, render_template, redirect
 from flask_sqlalchemy import SQLAlchemy
@@ -49,15 +50,15 @@ def add_author():
         name = request.form.get('name')
         date_of_birth = request.form.get('date_of_birth') if request.form.get('date_of_birth') else None
         date_of_death = request.form.get('date_of_death') if request.form.get('date_of_death') else None
-        if len(name) > 3:
+        if len(name) > 2:
             new_author = Author(name, date_of_birth, date_of_death)
             try:
                 db.session.add(new_author)
                 db.session.commit()
-                message = f'Dodano wpis nowego autora - {name}'
+                message = f'Dodano wpis nowego autora "{name}"'
             except IntegrityError:
                 db.session.rollback()
-                message = f'Wpis - {name} - już istnieje w bazie danych'
+                message = f'Wpis "{name}" już istnieje w bazie danych'
         else:
             message = 'Wpis autora zbyt krótki - nie dodano'    
             
@@ -81,10 +82,10 @@ def edit_author(id_author):
             author.date_of_death = date_of_death
             try:
                 db.session.commit()
-                message = f'Zmieniono wpis autora - {name}'
+                message = f'Zmieniono wpis autora "{name}"'
             except IntegrityError:
                 db.session.rollback()
-                message = f'Wpis - {name} - już istnieje w bazie danych'
+                message = f'Wpis "{name}" już istnieje w bazie danych'
         else:
             message = 'Wpis autora zbyt krótki - nie zmieniono'    
             
@@ -142,10 +143,10 @@ def add_client():
                     try:
                         db.session.add(new_client)
                         db.session.commit()
-                        message = f'Dodano wpis nowego klinta - {new_client}'
+                        message = f'Dodano wpis nowego klinta "{new_client}"'
                     except IntegrityError:
                         db.session.rollback()
-                        message = f'Podany email {email} już istnieje w bazie'
+                        message = f'Wpis email "{email}" już istnieje w bazie'
                 else:
                     message = 'Brak adresu email lub źle podany'
             else:
@@ -177,10 +178,10 @@ def edit_client(id_client):
                     client.phone_number = phone_number
                     try:
                         db.session.commit()
-                        message = f'Zmieniono wpis klinta - {client}'
+                        message = f'Zmieniono wpis klinta "{client}"'
                     except IntegrityError:
                         db.session.rollback()
-                        message = f'Podany email {email} już istnieje w bazie'
+                        message = f'Wpis email "{email}" już istnieje w bazie'
                 else:
                     message = 'Brak adresu email lub źle podany'
             else:
@@ -208,7 +209,7 @@ def delete_client(id_client):
         
         except IntegrityError:
             db.session.rollback()
-            message = f'Błąd w usuwaniu profilu'
+            message = 'Błąd w usuwaniu profilu'
         
     return render_template(
         'delete_client.html',
@@ -225,6 +226,45 @@ def details_client(id_client):
     return render_template(
         'details_client.html',
         client=client
+        )
+
+
+@app.route("/categories/", methods=['GET', 'POST'])
+def categories():
+    categories = Category.query.all()
+    message = 'Kategorie książek'
+    if request.method == 'POST':
+        delete_category = request.form.get('delete_category')
+        name = request.form.get('name')
+        if delete_category:
+            category = Category.query.get_or_404(delete_category)
+            category_name = category.name
+            try:
+                db.session.delete(category)
+                db.session.commit()
+                message = f'Usunięto kategorię - "{category_name}"'
+                categories = Category.query.all()
+
+            except IntegrityError:
+                db.session.rollback()
+                message = f'Ups... coś poszło nie tak, nie usunięto kategorię "{category_name}"'
+
+        elif len(name) > 2:
+            new_category = Category(name)
+            try:
+                db.session.add(new_category)
+                db.session.commit()
+                message = f'Dodano wpis nowej kategorii - "{new_category}"'
+                categories = Category.query.all()
+    
+            except IntegrityError:
+                db.session.rollback()
+                message = f'Wpis "{name}" już istnieje w bazie danych'
+
+    return render_template(
+        'categories.html',
+        categories=categories,
+        message=message
         )
 
 
