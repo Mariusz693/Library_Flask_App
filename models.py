@@ -1,5 +1,6 @@
 from enum import unique
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 
 db = SQLAlchemy()
 
@@ -29,16 +30,17 @@ class Book(db.Model):
     isbn = db.Column(db.String(13), unique=True, nullable=False)
     title = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
-    is_loaned = db.Column(db.Boolean, default=False)
+    copies = db.Column(db.Integer, nullable=False, default=1, server_default=text('1')) 
+    borrowed_copies = db.Column(db.Integer, nullable=False, default=0)
     author_id = db.Column(db.Integer, db.ForeignKey('authors.id', ondelete='CASCADE'), nullable=False)
     categories = db.relationship('Category', secondary=books_categories, lazy='subquery', backref=db.backref('books', lazy=True))
     clients = db.relationship('Client', secondary=books_clients, lazy='subquery', backref=db.backref('books', lazy=True))
     
-    def __init__(self, isbn, title, description, is_loaned, author_id):
+    def __init__(self, isbn, title, description, copies, author_id):
         self.isbn = isbn
         self.title = title
         self.descripion = description
-        self.is_loaned = is_loaned
+        self.copies = copies
         self.author_id = author_id
 
     def __repr__(self):

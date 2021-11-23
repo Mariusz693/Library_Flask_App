@@ -254,7 +254,7 @@ def categories():
             try:
                 db.session.add(new_category)
                 db.session.commit()
-                message = f'Dodano wpis nowej kategorii - "{new_category}"'
+                message = f'Dodano wpis nowej kategorii "{new_category}"'
                 categories = Category.query.all()
     
             except IntegrityError:
