@@ -370,6 +370,16 @@ def add_book():
         authors_list=authors_list,
         categories_list=categories_list
         )
+        
+
+@app.route("/details_book/<int:id_book>/")
+def details_book(id_book):
+    book = Book.query.get_or_404(id_book)
+    
+    return render_template(
+        'details_book.html',
+        book=book
+        )
 
 
 if __name__ == '__main__':

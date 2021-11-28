@@ -20,7 +20,7 @@
                     <td class="col-sm-2">{% if author.date_of_birth %} {{ author.date_of_birth }} {% else %} (brak danych) {% endif %}</td>
                     <td class="col-sm-2">{% if author.date_of_death %} {{ author.date_of_death }} {% else %} (brak danych) {% endif %}</td>
                     <td class="col-sm-1 text-center">
-                        <a href="/details_author/{{ author.id }}/">Profil</a>
+                        <a class="my-link" href="/details_author/{{ author.id }}/">profil</a>
                     </td>
                 </tr>
                 {% endfor %}

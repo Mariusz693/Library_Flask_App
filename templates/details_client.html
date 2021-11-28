@@ -32,11 +32,15 @@
                         <div class="col-sm-8">{% if client.phone_number %} (+48) {{ client.phone_number }} {% else %} (brak danych) {% endif %}</div>
                     </div>
                     <div class="row div-my-row">
+                        <div class="col-sm-4">Historia wypożyczeń:</div>
+                        <div class="col-sm-8"><a class="my-link" href='/client_books/{{ client.id }}/'>Sprawdź</a></div>
+                    </div>
+                    <div class="row div-my-row">
                         <div class="col-sm-4">Wypożyczone książki:</div>
                         <div class="col-sm-8">
                             <ul class="list-group">
                                 {% for book in client.books %}
-                                <li class="li-my-list">"{{ book.title }}", <a href='/details_book/{{ book.id }}/'>zobacz</a> </li>
+                                <li class="li-my-list"><a class="my-link" href='/details_book/{{ book.id }}/'>"{{ book.title }}"</a></li>
                                 {% endfor %}
                             </ul>
                         </div>
