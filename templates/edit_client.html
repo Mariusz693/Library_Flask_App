@@ -5,13 +5,13 @@
         <div class="mt-4 ml-4 mr-4">
             <form action="/edit_client/{{ client.id }}/" method="POST">
                 <div class="row border-bottom border-3 div-my-header">
-                    <div class="col mb-2">
+                    <div class="col-sm-9 mb-2">
                         <h4 class="color-header">{{ message }}</h4>
                     </div>
-                    <div class="col d-flex justify-content-end mb-2">
-                        <button type="submit" class="btn btn-success">Zapisz</button>
-                        <div class="col-1"></div>
-                        <a href="/clients/" class="btn btn-info">Klienci</a>
+                    <div class="col-sm-3 d-flex justify-content-end mb-2">
+                        <button type="submit" class="btn btn-success my-button">Zapisz</button>
+                        <a href="/details_client/{{ client.id }}/" class="btn btn-info my-button">Profil</a>
+                        <a href="/clients/" class="btn btn-info my-button">Klienci</a>
                     </div>
                 </div>
                 <div class="form-group row div-my-row">
@@ -43,7 +43,8 @@
                         <label for="phone_number" class="label-size col-form-label">Numer telefonu (+48):</label>
                     </div>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" name="phone_number" id="phone_number" minlength="9" maxlength="9" value="{{ client.phone_number }}"/>
+                        <input type="text" class="form-control" name="phone_number" id="phone_number" minlength="9" maxlength="9" 
+                        {% if client.phone_number %} value="{{ client.phone_number }}" {% else %} placeholder="Telefon, 9-cyfrowy" {% endif %}/>
                     </div>
                 </div>
             </form>

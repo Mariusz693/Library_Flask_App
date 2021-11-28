@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: aa3b08af84eb
+Revision ID: 8eeb556fc01b
 Revises: 
-Create Date: 2021-11-12 19:41:22.423987
+Create Date: 2021-11-25 19:55:16.404634
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'aa3b08af84eb'
+revision = '8eeb556fc01b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,25 +21,33 @@ def upgrade():
     op.create_table('authors',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=255), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.Column('date_of_birth', sa.Date(), nullable=True),
+    sa.Column('date_of_death', sa.Date(), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('name')
     )
     op.create_table('categories',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=255), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('name')
     )
     op.create_table('clients',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('first_name', sa.String(length=255), nullable=False),
     sa.Column('last_name', sa.String(length=255), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.Column('email', sa.String(length=255), nullable=False),
+    sa.Column('phone_number', sa.String(length=9), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('email')
     )
     op.create_table('books',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('isbn', sa.String(length=13), nullable=False),
     sa.Column('title', sa.String(length=255), nullable=False),
-    sa.Column('descripion', sa.Text(), nullable=True),
-    sa.Column('is_loaned', sa.Boolean(), nullable=True),
+    sa.Column('description', sa.Text(), nullable=True),
+    sa.Column('copies', sa.Integer(), nullable=False),
+    sa.Column('borrowed_copies', sa.Integer(), server_default='0', nullable=False),
     sa.Column('author_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['author_id'], ['authors.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id'),

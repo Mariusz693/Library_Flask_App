@@ -1,8 +1,26 @@
 
 
 def validate_phone(phone_number):
+
+    if len(phone_number) != 9:
         
+        return False
+
     for number in phone_number:
+        if not number.isdigit():
+    
+            return False
+    
+    return True
+
+
+def validate_isbn(isbn):
+
+    if len(isbn) != 13:
+        
+        return False
+
+    for number in isbn:
         if not number.isdigit():
     
             return False

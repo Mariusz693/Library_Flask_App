@@ -27,7 +27,7 @@ tr.tr-my-table {
 
 img.img-my-style {
     margin-top: 50px;
-    margin-bottom: 50px;
+    margin-bottom: 100px;
 }
 
 div.div-my-header {
@@ -55,7 +55,15 @@ button.button-my-dodaj {
     width: 70px;
     border-radius: 5px;
 }
+ 
+div.div-my-checkbox {
+    margin-bottom: 5px;
+}
 
+.my-button {
+    margin-left: 20px;
+    align-self: center;
+}
 /* ul.ul-my-list {
     margin-left: 15px;
 } */

@@ -1,4 +1,3 @@
-from enum import unique
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 
@@ -19,7 +18,7 @@ books_clients = db.Table(
     db.Column('book_id', db.Integer, db.ForeignKey('books.id', ondelete='CASCADE'), nullable=False),
     db.Column('client_id', db.Integer, db.ForeignKey('clients.id', ondelete='CASCADE'), nullable=False),
     db.Column('loan_date', db.Date, nullable=False),
-    db.Column('return_date', db.Date, default=None)
+    db.Column('return_date', db.Date, nullable=True)
 )
 
 
@@ -29,9 +28,9 @@ class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     isbn = db.Column(db.String(13), unique=True, nullable=False)
     title = db.Column(db.String(255), nullable=False)
-    description = db.Column(db.Text)
-    copies = db.Column(db.Integer, nullable=False, default=1, server_default=text('1')) 
-    borrowed_copies = db.Column(db.Integer, nullable=False, default=0)
+    description = db.Column(db.Text, nullable=True)
+    copies = db.Column(db.Integer, nullable=False) 
+    borrowed_copies = db.Column(db.Integer, nullable=False, default=u'0', server_default=u'0')
     author_id = db.Column(db.Integer, db.ForeignKey('authors.id', ondelete='CASCADE'), nullable=False)
     categories = db.relationship('Category', secondary=books_categories, lazy='subquery', backref=db.backref('books', lazy=True))
     clients = db.relationship('Client', secondary=books_clients, lazy='subquery', backref=db.backref('books', lazy=True))
@@ -39,7 +38,7 @@ class Book(db.Model):
     def __init__(self, isbn, title, description, copies, author_id):
         self.isbn = isbn
         self.title = title
-        self.descripion = description
+        self.description = description
         self.copies = copies
         self.author_id = author_id
 
@@ -60,10 +59,8 @@ class Author(db.Model):
     date_of_death = db.Column(db.Date, nullable=True)
     books = db.relationship('Book', backref='book', lazy=True)
 
-    def __init__(self, name, date_of_birth, date_of_death):
+    def __init__(self, name):
         self.name = name
-        self.date_of_birth = date_of_birth
-        self.date_of_death = date_of_death
 
     def __repr__(self):
         return '<id {}>'.format(self.id)
@@ -82,11 +79,10 @@ class Client(db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False)
     phone_number = db.Column(db.String(9), nullable=True)
     
-    def __init__(self, first_name, last_name, email, phone_number):
+    def __init__(self, first_name, last_name, email):
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
-        self.phone_number = phone_number
 
     def __repr__(self):
         return '<id {}>'.format(self.id)

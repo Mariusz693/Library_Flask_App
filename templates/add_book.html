@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %} Dodaj Książkę {% endblock %}
+{% block content %}
+    <div class="container div-my-container">
+        <div class="mt-4 ml-4 mr-4">
+            <form action="/add_book/" method="POST">
+                <div class="row border-bottom border-3 div-my-header">
+                    <div class="col-sm-9 mb-2">
+                        <h4 class="color-header">{{ message }}</h4>
+                    </div>
+                    <div class="col-sm-3 mb-2 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-success my-button">Zapisz</button>
+                        <a href="/books/" class="btn btn-info my-button">Książki</a>
+                    </div>
+                </div>
+                <div class="form-group row div-my-row">
+                    <div class="col-sm-3">
+                        <label for="title" class="label-size col-form-label">Tutuł:</label>
+                    </div>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="title" id="title" placeholder="Tytuł książki"/>
+                    </div>
+                </div>
+                <div class="form-group row div-my-row">
+                    <div class="col-sm-3">
+                        <label for="isbn" class="label-size col-form-label">Numer ISBN:</label>
+                    </div>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="isbn" id="isbn" minlength="13" maxlength="13" placeholder="Numer ISBN, 13-cyfrowy"/>
+                    </div>
+                </div>
+                <div class="form-group row div-my-row">
+                    <div class="col-sm-3">
+                        <label for="description" class="label-size col-form-label">Opis książki:</label>
+                    </div>
+                    <div class="col-sm-9">
+                        <textarea class="form-control" rows="5" name="description" id="description"
+                                  placeholder="Krótki opis książki"></textarea>
+                    </div>
+                </div>
+                <div class="form-group row div-my-row">
+                    <div class="col-sm-3">
+                        <label for="author" class="label-size col-form-label">Autor:</label>
+                    </div>
+                    <div class="col-sm-9">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label for="author" class="label-size col-form-label my-label">Wybierz z list:</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <select class="form-control" name="author" id="author">
+                                    <option value="">-----------------</option>
+                                    {% for author in authors_list %}
+                                        <option value="{{ author.id }}">{{ author }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label for="author_name" class="label-size col-form-label my-label">Lub dodaj nowego autora:</label>
+                            </div>
+                            <div class="col-sm-3">
+                                <label for="author_date_of_birth" class="label-size col-form-label my-label">Data urodzenia:</label>
+                            </div>
+                            <div class="col-sm-3">
+                                <label for="author_date_of_death" class="label-size col-form-label my-label">Data śmierci:</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="author_name" id="author_name" placeholder="Imię i nazwisko (pseudonim)"/>
+                            </div>
+                            <div class="col-sm-3">
+                                <input type="date" class="form-control" name="author_date_of_birth" id="author_date_of_birth"/>
+                            </div>
+                            <div class="col-sm-3">
+                                <input type="date" class="form-control" name="author_date_of_death" id="author_date_of_death"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row div-my-row">
+                    <div class="col-sm-3">
+                        <label for="author" class="label-size col-form-label">Kategorie:</label>
+                    </div>
+                    <div class="col-sm-9">
+                        <fieldset>
+                            <legend class="label-size col-form-label my-label">Wybierz z listy</legend>
+                            <div class="row">
+                                {% for category in categories_list %}
+                                <div class="col-sm-6 div-my-checkbox">
+                                    <input type="checkbox" id="{{ category.id }}" name="categories" value="{{ category.id }}">
+                                    <label for="{{ category.id }}">{{ category }}</label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </fieldset>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label for="new_category" class="label-size col-form-label my-label">Lub dodaj nową kategorię:</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="new_category" id="new_category" placeholder="Nowa kategoria"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row div-my-row">
+                    <div class="col-sm-3">
+                        <label for="copies" class="label-size col-form-label">Ilość egzemplarzy:</label>
+                    </div>
+                    <div class="col-sm-9">
+                        <input type="number" class="form-control" name="copies" id="copies" min="1" step="1" value="1"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div>                
+            <img class="rounded mx-auto d-block img-thumbnail img-my-style" 
+            src="{{ url_for('static', filename='images/add_book.jpg') }}" alt="Add book photo">
+        </div>
+    </div>
+{% endblock content %}

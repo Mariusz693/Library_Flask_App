@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from models import db
 from sqlalchemy.exc import IntegrityError
 # from flask_wtf import CSRFProtect, csrf
-from validators import validate_phone, validate_email
+from validators import validate_phone, validate_email, validate_isbn
 
 load_dotenv()
 
@@ -48,10 +48,14 @@ def add_author():
     message = 'Dodaj wpis nowego autora'
     if request.method == 'POST':
         name = request.form.get('name')
-        date_of_birth = request.form.get('date_of_birth') if request.form.get('date_of_birth') else None
-        date_of_death = request.form.get('date_of_death') if request.form.get('date_of_death') else None
+        date_of_birth = request.form.get('date_of_birth')
+        date_of_death = request.form.get('date_of_death')
         if len(name) > 2:
-            new_author = Author(name, date_of_birth, date_of_death)
+            new_author = Author(name)
+            if date_of_birth:
+                new_author.date_of_birth = date_of_birth
+            if date_of_death:
+                new_author.date_of_death = date_of_death
             try:
                 db.session.add(new_author)
                 db.session.commit()
@@ -74,12 +78,12 @@ def edit_author(id_author):
     message = f'Zmień wpis autora - {author.name}'
     if request.method == 'POST':
         name = request.form.get('name')
-        date_of_birth = request.form.get('date_of_birth') if request.form.get('date_of_birth') else None
-        date_of_death = request.form.get('date_of_death') if request.form.get('date_of_death') else None
+        date_of_birth = request.form.get('date_of_birth')
+        date_of_death = request.form.get('date_of_death')
         if len(name) > 3:
             author.name = name
-            author.date_of_birth = date_of_birth
-            author.date_of_death = date_of_death
+            author.date_of_birth = date_of_birth if date_of_birth else None
+            author.date_of_death = date_of_death if date_of_death else None
             try:
                 db.session.commit()
                 message = f'Zmieniono wpis autora "{name}"'
@@ -139,7 +143,9 @@ def add_client():
         if first_name and last_name:
             if phone_number == '' or validate_phone(phone_number):
                 if email and validate_email(email):
-                    new_client = Client(first_name, last_name, email, phone_number)
+                    new_client = Client(first_name, last_name, email)
+                    if phone_number:
+                        new_client.phone_number = phone_number
                     try:
                         db.session.add(new_client)
                         db.session.commit()
@@ -175,7 +181,8 @@ def edit_client(id_client):
                     client.first_name = first_name
                     client.last_name = last_name
                     client.email = email
-                    client.phone_number = phone_number
+                    if phone_number:
+                        client.phone_number = phone_number
                     try:
                         db.session.commit()
                         message = f'Zmieniono wpis klinta "{client}"'
@@ -265,6 +272,102 @@ def categories():
         'categories.html',
         categories=categories,
         message=message
+        )
+
+
+@app.route("/add_book/", methods=['GET', 'POST'])
+def add_book():
+    message = 'Dodaj wpis nowej książki'
+    authors_list = Author.query.all()
+    categories_list = Category.query.all()
+    if request.method == 'POST':
+        title = request.form.get('title')
+        isbn = request.form.get('isbn')
+        description = request.form.get('description')
+        author = request.form.get('author')
+        categories = request.form.getlist('categories')
+        new_category = request.form.get('new_category')
+        copies = request.form.get('copies')
+        if len(title) > 2:
+            if validate_isbn(isbn):
+                if author == '':
+                    name = request.form.get('author_name')
+                    date_of_birth = request.form.get('author_date_of_birth')
+                    date_of_death = request.form.get('author_date_of_death')
+                    if len(name) > 2:
+                        new_author = Author(name)
+                        if date_of_birth:
+                            new_author.date_of_birth = date_of_birth
+                        if date_of_death:
+                            new_author.date_of_death = date_of_death
+                        try:
+                            db.session.add(new_author)
+                            db.session.commit()
+                            author = new_author.id
+                        except IntegrityError:
+                            db.session.rollback()
+                            message = f'Wpis autora "{name}" już istnieje w bazie danych, wybierz z listy autorów - uzupełnij ponownie'
+                            return render_template(
+                                'add_book.html',
+                                message=message,
+                                authors_list=authors_list,
+                                categories_list=categories_list
+                                )
+                    else:
+                        if name == '':
+                            message = 'Wybierz autora z listy lub wpisz nową pozycję - uzupełnij ponownie'
+                        else:
+                            message = 'Wpis nowego autora zbyt krótki - uzupełnij ponownie'    
+                        return render_template(
+                            'add_book.html',
+                            message=message,
+                            authors_list=authors_list,
+                            categories_list=categories_list
+                            )
+                if len(new_category) > 2:
+                    new_category = Category(new_category)
+                    try:
+                        db.session.add(new_category)
+                        db.session.commit()
+                        categories.append(str(new_category.id))
+                    except IntegrityError:
+                        db.session.rollback()
+                        message = f'Wpis "{new_category}" już istnieje w bazie danych, wybierz z listy kategorii - uzupełnij ponownie'
+                        return render_template(
+                            'add_book.html',
+                            message=message,
+                            authors_list=authors_list,
+                            categories_list=categories_list
+                            )
+                elif new_category:
+                    message = 'Wpis nowej kategorii zbyt krótki - uzupełnij ponownie'    
+                    return render_template(
+                        'add_book.html',
+                        message=message,
+                        authors_list=authors_list,
+                        categories_list=categories_list
+                        )
+                # author = Author.query.get(author)
+                new_book = Book(isbn, title, description, copies, author)
+                categories_set = Category.query.filter(Category.id.in_(categories))
+                new_book.categories.extend(categories_set)
+                try:
+                    db.session.add(new_book)
+                    db.session.commit()
+                    message = f'Dodano wpis nowej książki "{new_book}"'
+                except IntegrityError:
+                    db.session.rollback()
+                    message = f'Wpis książki o numerze ISBN {isbn} już istnieje w bazie danych - uzupełnij ponownie'
+            else:
+                message = 'Numer ISBN jest nie poprawny - uzupełnij ponownie'
+        else:
+            message = 'Wpis tytułu nowej książki zbyt krótki - uzupełnij ponownie'
+            
+    return render_template(
+        'add_book.html',
+        message=message,
+        authors_list=authors_list,
+        categories_list=categories_list
         )
 
 
