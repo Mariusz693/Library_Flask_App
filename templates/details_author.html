@@ -31,9 +31,13 @@
                         <div class="col-sm-4">Utwory:</div>
                         <div class="col-sm-8">
                             <ul class="list-group">
-                                {% for book in author.books %}
-                                <li class="li-my-list">"{{ book.title }}", <a href='/details_book/{{ book.id }}/'>zobacz</a> </li>
-                                {% endfor %}
+                                <div class="row">
+                                    {% for book in author.books %}
+                                    <div class="col-sm-6">
+                                        <li class="li-my-list">"{{ book.title }}", <a href='/details_book/{{ book.id }}/'>link</a></li>
+                                    </div>
+                                    {% endfor %}
+                                </div>
                             </ul>
                         </div>
                     </div>

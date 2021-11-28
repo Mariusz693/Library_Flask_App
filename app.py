@@ -28,7 +28,8 @@ def index():
 
 @app.route("/books/")
 def books():
-    return render_template('index.html')
+    books_list = Book.query.all()
+    return render_template('books.html', books_list=books_list)
 
 
 @app.route("/authors/")

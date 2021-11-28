@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
+from sqlalchemy.orm import backref
 
 db = SQLAlchemy()
 
@@ -57,7 +58,10 @@ class Author(db.Model):
     name = db.Column(db.String(255), unique=True, nullable=False)
     date_of_birth = db.Column(db.Date, nullable=True)
     date_of_death = db.Column(db.Date, nullable=True)
-    books = db.relationship('Book', backref='book', lazy=True)
+    # books = db.relationship('Book', backref='book', lazy=True)
+
+    books = db.relationship('Book', lazy='joined', backref=db.backref('author', lazy='joined'))
+
 
     def __init__(self, name):
         self.name = name
