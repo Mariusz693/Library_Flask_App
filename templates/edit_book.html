@@ -1,15 +1,16 @@
 {% extends "base.html" %}
-{% block title %} Dodaj Książkę {% endblock %}
+{% block title %} Edytuj Książkę {% endblock %}
 {% block content %}
     <div class="container div-my-container">
         <div class="mt-4 ml-4 mr-4">
-            <form action="/add_book/" method="POST">
+            <form action="/edit_book/{{ book.id }}/" method="POST">
                 <div class="row border-bottom border-3 div-my-header">
                     <div class="col-sm-9 mb-2">
                         <h4 class="color-header">{{ message }}</h4>
                     </div>
                     <div class="col-sm-3 mb-2 d-flex justify-content-end">
                         <button type="submit" class="btn btn-success my-button">Zapisz</button>
+                        <a href="/details_book/{{ book.id }}/" class="btn btn-info my-button">Powrót</a>
                         <a href="/books/" class="btn btn-info my-button">Książki</a>
                     </div>
                 </div>
@@ -18,7 +19,7 @@
                         <label for="title" class="label-size col-form-label">Tutuł:</label>
                     </div>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" name="title" id="title" placeholder="Tytuł książki"/>
+                        <input type="text" class="form-control" name="title" id="title" value="{{ book.title }}"/>
                     </div>
                 </div>
                 <div class="form-group row div-my-row">
@@ -26,7 +27,7 @@
                         <label for="isbn" class="label-size col-form-label">Numer ISBN (13-cyfrowy):</label>
                     </div>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" name="isbn" id="isbn" minlength="13" maxlength="13" placeholder="Numer ISBN, 13-cyfrowy"/>
+                        <input type="text" class="form-control" name="isbn" id="isbn" minlength="13" maxlength="13" value="{{ book.isbn }}"/>
                     </div>
                 </div>
                 <div class="form-group row div-my-row">
@@ -35,7 +36,7 @@
                     </div>
                     <div class="col-sm-9">
                         <textarea class="form-control" rows="5" name="description" id="description"
-                                  placeholder="Krótki opis książki"></textarea>
+                                  placeholder="Krótki opis książki">{{ book.description }}</textarea>
                     </div>
                 </div>
                 <div class="form-group row div-my-row">
@@ -53,7 +54,7 @@
                                 <select class="form-control" name="author" id="author">
                                     <option value="">-----------------</option>
                                     {% for author in authors_list %}
-                                        <option value="{{ author.id }}">
+                                        <option value="{{ author.id }}" {% if author.id == book.author_id %} selected {% endif %}>
                                             {{ author }}, ({% if author.date_of_birth %} {{ author.date_of_birth.strftime('%Y') }} {% else %} ---- {% endif %} 
                                             - {% if author.date_of_birth %} {{ author.date_of_death.strftime('%Y') }} {% else %} ---- {% endif %})</option>
                                     {% endfor %}
@@ -94,7 +95,7 @@
                             <div class="row">
                                 {% for category in categories_list %}
                                 <div class="col-sm-6 div-my-checkbox">
-                                    <input type="checkbox" id="{{ category.id }}" name="categories" value="{{ category.id }}">
+                                    <input type="checkbox" id="{{ category.id }}" name="categories" value="{{ category.id }}" {% if category.id in book.categories_set %} checked {% endif %}>
                                     <label for="{{ category.id }}">{{ category }}</label>
                                 </div>
                                 {% endfor %}
@@ -117,14 +118,14 @@
                         <label for="copies" class="label-size col-form-label">Ilość egzemplarzy:</label>
                     </div>
                     <div class="col-sm-9">
-                        <input type="number" class="form-control" name="copies" id="copies" min="1" step="1" value="1"/>
+                        <input type="number" class="form-control" name="copies" id="copies" min="1" step="1" value="{{ book.copies }}"/>
                     </div>
                 </div>
             </form>
         </div>
         <div>                
             <img class="rounded mx-auto d-block img-thumbnail img-my-style" 
-            src="{{ url_for('static', filename='images/add_book.jpg') }}" alt="Add book photo">
+            src="{{ url_for('static', filename='images/edit_book.jpg') }}" alt="Edit book photo">
         </div>
     </div>
 {% endblock content %}

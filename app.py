@@ -76,7 +76,7 @@ def add_author():
 @app.route("/edit_author/<int:id_author>/", methods=['GET', 'POST'])
 def edit_author(id_author):
     author = Author.query.get_or_404(id_author)
-    message = f'Zmień wpis autora - {author.name}'
+    message = f'Zmień wpis autora "{author.name}"'
     if request.method == 'POST':
         name = request.form.get('name')
         date_of_birth = request.form.get('date_of_birth')
@@ -170,7 +170,7 @@ def add_client():
 @app.route("/edit_client/<int:id_client>/", methods=['GET', 'POST'])
 def edit_client(id_client):
     client = Client.query.get_or_404(id_client)
-    message = f'Zmień wpis clienta - {client}'
+    message = f'Zmień wpis clienta "{client}"'
     if request.method == 'POST':
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
@@ -289,76 +289,72 @@ def add_book():
         categories = request.form.getlist('categories')
         new_category = request.form.get('new_category')
         copies = request.form.get('copies')
+        
         if len(title) > 2:
             if validate_isbn(isbn):
+                
                 if author == '':
                     name = request.form.get('author_name')
                     date_of_birth = request.form.get('author_date_of_birth')
                     date_of_death = request.form.get('author_date_of_death')
-                    if len(name) > 2:
-                        new_author = Author(name)
-                        if date_of_birth:
-                            new_author.date_of_birth = date_of_birth
-                        if date_of_death:
-                            new_author.date_of_death = date_of_death
-                        try:
-                            db.session.add(new_author)
-                            db.session.commit()
-                            author = new_author.id
-                        except IntegrityError:
-                            db.session.rollback()
-                            message = f'Wpis autora "{name}" już istnieje w bazie danych, wybierz z listy autorów - uzupełnij ponownie'
-                            return render_template(
-                                'add_book.html',
-                                message=message,
-                                authors_list=authors_list,
-                                categories_list=categories_list
-                                )
-                    else:
+                    if Author.query.filter_by(name=name).first() or len(name) < 3:
                         if name == '':
                             message = 'Wybierz autora z listy lub wpisz nową pozycję - uzupełnij ponownie'
+                        elif len(name) < 3:
+                            message = 'Wpis nowego autora zbyt krótki, min. 3 znaki - uzupełnij ponownie'
                         else:
-                            message = 'Wpis nowego autora zbyt krótki - uzupełnij ponownie'    
+                            message = f'Wpis autora "{name}" już istnieje w bazie danych, wybierz z listy autorów - uzupełnij ponownie'
+                        
                         return render_template(
                             'add_book.html',
                             message=message,
                             authors_list=authors_list,
                             categories_list=categories_list
                             )
-                if len(new_category) > 2:
+                    author_book = Author(name)
+                    if date_of_birth:
+                        author_book.date_of_birth = date_of_birth
+                    if date_of_death:
+                        author_book.date_of_death = date_of_death       
+                else:
+                    author_book = Author.query.filter_by(id=author).first()
+                
+                if new_category:
+                    if Category.query.filter_by(name=new_category).first() or len(new_category) < 3:
+                        if len(new_category) < 3:
+                            message = 'Wpis nowej kategorii zbyt krótki, min. 3 znaki - uzupełnij ponownie'
+                        else:
+                            message = f'Wpis "{new_category}" już istnieje w bazie danych, wybierz z listy kategorii - uzupełnij ponownie'
+                        
+                        return render_template(
+                            'add_book.html',
+                            message=message,
+                            authors_list=authors_list,
+                            categories_list=categories_list
+                            )
                     new_category = Category(new_category)
-                    try:
+                
+                try:
+                    if author == '':
+                        db.session.add(author_book)
+                        db.session.commit()
+                    if new_category:
                         db.session.add(new_category)
                         db.session.commit()
                         categories.append(str(new_category.id))
-                    except IntegrityError:
-                        db.session.rollback()
-                        message = f'Wpis "{new_category}" już istnieje w bazie danych, wybierz z listy kategorii - uzupełnij ponownie'
-                        return render_template(
-                            'add_book.html',
-                            message=message,
-                            authors_list=authors_list,
-                            categories_list=categories_list
-                            )
-                elif new_category:
-                    message = 'Wpis nowej kategorii zbyt krótki - uzupełnij ponownie'    
-                    return render_template(
-                        'add_book.html',
-                        message=message,
-                        authors_list=authors_list,
-                        categories_list=categories_list
-                        )
-                # author = Author.query.get(author)
-                new_book = Book(isbn, title, description, copies, author)
-                categories_set = Category.query.filter(Category.id.in_(categories))
-                new_book.categories.extend(categories_set)
-                try:
+                    new_book = Book(isbn, title, description, int(copies), author_book.id)
+                    categories_set = Category.query.filter(Category.id.in_(categories))
+                    new_book.categories.extend(categories_set)
                     db.session.add(new_book)
                     db.session.commit()
                     message = f'Dodano wpis nowej książki "{new_book}"'
                 except IntegrityError:
                     db.session.rollback()
                     message = f'Wpis książki o numerze ISBN {isbn} już istnieje w bazie danych - uzupełnij ponownie'
+
+                authors_list = Author.query.all()
+                categories_list = Category.query.all()
+
             else:
                 message = 'Numer ISBN jest nie poprawny - uzupełnij ponownie'
         else:
@@ -366,6 +362,113 @@ def add_book():
             
     return render_template(
         'add_book.html',
+        message=message,
+        authors_list=authors_list,
+        categories_list=categories_list
+        )
+
+
+@app.route("/edit_book/<int:id_book>/", methods=['GET', 'POST'])
+def edit_book(id_book):
+    book = Book.query.get_or_404(id_book)
+    message = f'Zmień wpis książki "{book}"'
+    authors_list = Author.query.all()
+    categories_list = Category.query.all()
+    book.categories_set = []
+    for item in book.categories:
+        book.categories_set.append(item.id)
+
+    if request.method == 'POST':
+        title = request.form.get('title')
+        isbn = request.form.get('isbn')
+        description = request.form.get('description')
+        author = request.form.get('author')
+        categories = request.form.getlist('categories')
+        new_category = request.form.get('new_category')
+        copies = request.form.get('copies')
+
+        if len(title) > 2:
+            if validate_isbn(isbn):
+                
+                if author == '':
+                    name = request.form.get('author_name')
+                    date_of_birth = request.form.get('author_date_of_birth')
+                    date_of_death = request.form.get('author_date_of_death')
+                    if Author.query.filter_by(name=name).first() or len(name) < 3:
+                        if name == '':
+                            message = 'Wybierz autora z listy lub wpisz nową pozycję - uzupełnij ponownie'
+                        elif len(name) < 3:
+                            message = 'Wpis nowego autora zbyt krótki, min. 3 znaki - uzupełnij ponownie'
+                        else:
+                            message = f'Wpis autora "{name}" już istnieje w bazie danych, wybierz z listy autorów - uzupełnij ponownie'
+                        
+                        return render_template(
+                            'edit_book.html',
+                            book=book,
+                            message=message,
+                            authors_list=authors_list,
+                            categories_list=categories_list
+                            )
+                    author_book = Author(name)
+                    if date_of_birth:
+                        author_book.date_of_birth = date_of_birth
+                    if date_of_death:
+                        author_book.date_of_death = date_of_death       
+                else:
+                    author_book = Author.query.filter_by(id=author).first()
+                
+                if new_category:
+                    if Category.query.filter_by(name=new_category).first() or len(new_category) < 3:
+                        if len(new_category) < 3:
+                            message = 'Wpis nowej kategorii zbyt krótki, min. 3 znaki - uzupełnij ponownie'
+                        else:
+                            message = f'Wpis "{new_category}" już istnieje w bazie danych, wybierz z listy kategorii - uzupełnij ponownie'
+                        
+                        return render_template(
+                            'edit_book.html',
+                            book=book,
+                            message=message,
+                            authors_list=authors_list,
+                            categories_list=categories_list
+                            )
+                    new_category = Category(new_category)
+
+                try:
+                    if author == '':
+                        db.session.add(author_book)
+                        db.session.commit()
+                    if new_category:
+                        db.session.add(new_category)
+                        db.session.commit()
+                        categories.append(str(new_category.id))
+                    book.title = title
+                    book.isbn = isbn
+                    book.description = description
+                    book.copies = int(copies)
+                    book.author = author_book
+                    book.categories.clear()
+                    categories_set = Category.query.filter(Category.id.in_(categories))
+                    book.categories.extend(categories_set)
+                    db.session.commit()
+                    message = f'Zmieniono wpis książki "{book}"'
+                except IntegrityError:
+                    db.session.rollback()
+                    message = f'Wpis książki o numerze ISBN {isbn} już istnieje w bazie danych - uzupełnij ponownie'
+
+                authors_list = Author.query.all()
+                categories_list = Category.query.all()
+                book.categories_set = []
+                for item in book.categories:
+                    book.categories_set.append(item.id)
+            
+            else:
+                message = 'Numer ISBN jest nie poprawny - uzupełnij ponownie'
+        else:
+            message = 'Wpis tytułu nowej książki zbyt krótki - uzupełnij ponownie'
+    
+    return render_template(
+        'edit_book.html',
+        book=book,
         message=message,
         authors_list=authors_list,
         categories_list=categories_list
