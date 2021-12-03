@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %} Usuń Książkę {% endblock %}
+{% block content %}
+    <div class="container div-my-container">
+        <div class="mt-4 ml-4 mr-4">
+            <form method="POST">
+                <div class="row border-bottom border-3 div-my-header">
+                    <div class="col-sm-9 mb-2">
+                        <h4 class="color-header">{{ message }}</h4>
+                    </div>
+                    <div class="col-sm-3 d-flex justify-content-end mb-2">
+                        <button type="submit" class="btn btn-danger my-button">Potwierdz</button>
+                        <a href="/details_book/{{ book.id }}/" class="btn btn-info my-button">Powrót</a>
+                        <a href="/books/" class="btn btn-info my-button">Książki</a>
+                    </div>
+                </div>
+            </form>
+            <div class="row div-my-row">
+                <div class="col-sm-4">Tytuł:</div>
+                <div class="col-sm-8">{{ book.title }}</div>
+            </div>
+            <div class="row div-my-row">
+                <div class="col-sm-4">Numer ISBN:</div>
+                <div class="col-sm-8">{{ book.isbn }}</div>
+            </div>
+            <div class="row div-my-row">
+                <div class="col-sm-4">Autor:</div>
+                <div class="col-sm-8">{{ book.author }}</div>
+            </div>
+            <div class="row div-my-row">
+                <div class="col-sm-4">Opis:</div>
+                <div class="col-sm-8">{{ book.description }}</div>
+            </div>
+            <div class="row div-my-row">
+                <div class="col-sm-4">Kategorie:</div>
+                <div class="col-sm-8">{{ book.categories|join(", ") }}</div>
+            </div>
+            <div class="row div-my-row">
+                <div class="col-sm-4">Ilość egrzemplarzy:</div>
+                <div class="col-sm-8">{{ book.copies }}</div>
+            </div>
+            <div class="row div-my-row">
+                <div class="col-sm-4">Wyposyżone:</div>
+                <div class="col-sm-8">{{ book.borrowed_copies }}</div>
+        </div>
+        <div>
+            <img class="rounded mx-auto d-block img-thumbnail img-my-style" 
+            src="{{ url_for('static', filename='images/delete_book.jpg') }}" alt="Delete book photo">
+        </div>
+    </div>
+{% endblock content %}

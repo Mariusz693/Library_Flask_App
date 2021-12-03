@@ -224,7 +224,7 @@ def delete_client(id_client):
         message=message,
         client=client
         )
-        
+
 
 @app.route("/details_client/<int:id_client>/")
 def details_client(id_client):
@@ -473,7 +473,32 @@ def edit_book(id_book):
         authors_list=authors_list,
         categories_list=categories_list
         )
+
+
+@app.route("/delete_book/<int:id_book>/", methods=['GET', 'POST'])
+def delete_book(id_book):
+    book = Book.query.get_or_404(id_book)
+    message = 'Potwierdź usunięcie książki'
+    if request.method == 'POST':
+        if book.borrowed_copies == 0:
+            try:
+                db.session.delete(book)
+                db.session.commit()
+
+                return redirect('/books/')
+            
+            except IntegrityError:
+                db.session.rollback()
+                message = 'Błąd w usuwaniu książki'
+        else:
+            message = 'Egzemplarze na wypożyczeniu, usuń gdy będą wszystkie'
         
+    return render_template(
+        'delete_book.html',
+        message=message,
+        book=book
+        )
+
 
 @app.route("/details_book/<int:id_book>/")
 def details_book(id_book):
