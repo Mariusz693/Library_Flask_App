@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %} Dodaj Wypożyczenie {% endblock %}
+{% block content %}
+    <div class="container div-my-container">
+        <div class="mt-4 ml-4 mr-4">
+            <form action="/add_loan/" method="POST">
+                <div class="row border-bottom border-3 div-my-header">
+                    <div class="col-sm-9 mb-2">
+                        <h4 class="color-header">{{ message }}</h4>
+                    </div>
+                    <div class="col-sm-3 mb-2 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-success my-button">Zapisz</button>
+                        <a href="/" class="btn btn-info my-button">Powrót</a>
+                    </div>
+                </div>
+                <div class="form-group row div-my-row">
+                    <div class="col-sm-3">
+                        <label for="book" class="label-size col-form-label">Wybierz książkę:</label>
+                    </div>
+                    <div class="col-sm-9">
+                        <select class="form-control" name="book" id="book">
+                            <option value="">-----------------</option>
+                            {% for book in books_list %}
+                                <option value="{{ book.id }}">{{ book }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row div-my-row">
+                    <div class="col-sm-3">
+                        <label for="client" class="label-size col-form-label">Wybierz klienta:</label>
+                    </div>
+                    <div class="col-sm-9">
+                        <select class="form-control" name="client" id="client">
+                            <option value="">-----------------</option>
+                            {% for client in clients_list %}
+                                <option value="{{ client.id }}">{{ client }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row div-my-row">
+                    <div class="col-sm-3">
+                        <label for="author" class="label-size col-form-label">Data Wypożyczenia:</label>
+                    </div>
+                    <div class="col-sm-9">
+                        <!-- <div class="row">
+                            <div class="col-sm-6"> -->
+                                <!-- <label for="loan_date" class="label-size col-form-label my-label">Data Wypożyczenia:</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="return_date" class="label-size col-form-label my-label">Data zwrotu:</label>
+                            </div>
+                        </div> -->
+                        <!-- <div class="row">
+                            <div class="col-sm-6"> -->
+                                <input type="date" class="form-control" name="loan_date" id="loan_date"/>
+                            <!-- </div>
+                            <div class="col-sm-6">
+                                <input type="date" class="form-control" name="return_date" id="return_date"/>
+                            </div> -->
+                        <!-- </div> -->
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div>                
+            <img class="rounded mx-auto d-block img-thumbnail img-my-style" 
+            src="{{ url_for('static', filename='images/add_loan.jpg') }}" alt="Add loan photo">
+        </div>
+    </div>
+{% endblock content %}
