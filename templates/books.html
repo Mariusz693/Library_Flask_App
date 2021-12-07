@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %} Książki {% endblock %}
 {% block content %}
-    <div class="container div-my-container">
+    <div class="container my-container">
         <table class="table">
             <thead>
                 <tr class="d-flex flex-wrap">
@@ -16,7 +16,7 @@
             </thead>
             <tbody>
                 {% for book in books_list %}
-                <tr class="d-flex flex-wrap tr-my-table">
+                <tr class="d-flex flex-wrap my-table">
                     <td class="col-sm-1">{{ loop.index }}</td>
                     <th class="col-sm-3">{{ book.title }}</th>
                     <td class="col-sm-2">{{ book.isbn }}</td>
@@ -24,7 +24,7 @@
                     <td class="col-sm-1 text-center">{{ book.copies }}</td>
                     <td class="col-sm-1 text-center">{{ book.borrowed_copies }}</td>
                     <td class="col-sm-1 text-center">
-                        <a class="my-link" href="/details_book/{{ book.id }}/">zobacz</a>
+                        <a class="my-link" href="/details_book/{{ book.id }}/">Zobacz</a>
                     </td>
                 </tr>
                 {% endfor %}

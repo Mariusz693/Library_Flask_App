@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light navbar-my-style">
+    <nav class="navbar navbar-expand-lg navbar-light my-navbar">
         <div class="container-fluid">
             <a class="navbar-brand" href="/#">Strona główna</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -49,7 +49,7 @@
 <!-- //--------------------------- page content -------------------------// -->
     {% block content %}{% endblock content %}
 <!-- //--------------------------- page content end ---------------------// -->
-    <footer class="text-center text-white fixed-bottom footer-my-style">
+    <footer class="text-center text-white fixed-bottom my-footer">
         <div class="text-center p-3">© 2021 Copyright: Mariusz Kuleta</div>
     </footer>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>

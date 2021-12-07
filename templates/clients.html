@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %} Klienci {% endblock %}
 {% block content %}
-    <div class="container div-my-container">
+    <div class="container my-container">
         <table class="table">
             <thead>
                 <tr class="d-flex flex-wrap">
@@ -15,14 +15,14 @@
             </thead>
             <tbody>
                 {% for client in clients_list %}
-                <tr class="d-flex flex-wrap tr-my-table">
+                <tr class="d-flex flex-wrap my-table">
                     <td class="col-sm-1">{{ loop.index }}</td>
                     <th class="col-sm-2">{{ client.first_name }}</th>
                     <th class="col-sm-3">{{ client.last_name }}</th>
                     <td class="col-sm-3">{{ client.email }}</td>
                     <td class="col-sm-2">{% if client.phone_number %} (+48) {{ client.phone_number }} {% else %} (brak danych) {% endif %}</td>
                     <td class="col-sm-1 text-center">
-                        <a class="my-link" href="/details_client/{{ client.id }}/">profil</a>
+                        <a class="my-link" href="/details_client/{{ client.id }}/">Profil</a>
                     </td>
                 </tr>
                 {% endfor %}

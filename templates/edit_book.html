@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% block title %} Edytuj Książkę {% endblock %}
 {% block content %}
-    <div class="container div-my-container">
+    <div class="container my-container">
         <div class="mt-4 ml-4 mr-4">
             <form action="/edit_book/{{ book.id }}/" method="POST">
-                <div class="row border-bottom border-3 div-my-header">
+                <div class="row border-bottom border-3 my-header">
                     <div class="col-sm-9 mb-2">
                         <h4 class="color-header">{{ message }}</h4>
                     </div>
@@ -14,39 +14,39 @@
                         <a href="/books/" class="btn btn-info my-button">Książki</a>
                     </div>
                 </div>
-                <div class="form-group row div-my-row">
-                    <div class="col-sm-3">
-                        <label for="title" class="label-size col-form-label">Tutuł:</label>
+                <div class="form-group row my-row">
+                    <div class="col-sm-3 my-bold-text">
+                        <label for="title" class="label-size col-form-label">Tutuł: *</label>
                     </div>
                     <div class="col-sm-9">
                         <input type="text" class="form-control" name="title" id="title" value="{{ book.title }}"/>
                     </div>
                 </div>
-                <div class="form-group row div-my-row">
-                    <div class="col-sm-3">
-                        <label for="isbn" class="label-size col-form-label">Numer ISBN (13-cyfrowy):</label>
+                <div class="form-group row my-row">
+                    <div class="col-sm-3 my-bold-text">
+                        <label for="isbn" class="label-size col-form-label">Numer ISBN (13-cyfrowy): *</label>
                     </div>
                     <div class="col-sm-9">
                         <input type="text" class="form-control" name="isbn" id="isbn" minlength="13" maxlength="13" value="{{ book.isbn }}"/>
                     </div>
                 </div>
-                <div class="form-group row div-my-row">
-                    <div class="col-sm-3">
-                        <label for="description" class="label-size col-form-label">Opis książki:</label>
+                <div class="form-group row my-row">
+                    <div class="col-sm-3 my-bold-text">
+                        <label for="description" class="label-size col-form-label">Opis książki: *</label>
                     </div>
                     <div class="col-sm-9">
                         <textarea class="form-control" rows="5" name="description" id="description"
                                   placeholder="Krótki opis książki">{{ book.description }}</textarea>
                     </div>
                 </div>
-                <div class="form-group row div-my-row">
-                    <div class="col-sm-3">
-                        <label for="author" class="label-size col-form-label">Autor:</label>
+                <div class="form-group row my-row">
+                    <div class="col-sm-3 my-bold-text">
+                        <label for="author" class="label-size col-form-label">Autor: *</label>
                     </div>
                     <div class="col-sm-9">
                         <div class="row">
                             <div class="col-sm-12">
-                                <label for="author" class="label-size col-form-label my-label">Wybierz z list:</label>
+                                <label for="author" class="label-size col-form-label my-label">Wybierz z list: *</label>
                             </div>
                         </div>
                         <div class="row">
@@ -56,14 +56,14 @@
                                     {% for author in authors_list %}
                                         <option value="{{ author.id }}" {% if author.id == book.author_id %} selected {% endif %}>
                                             {{ author }}, ({% if author.date_of_birth %} {{ author.date_of_birth.strftime('%Y') }} {% else %} ---- {% endif %} 
-                                            - {% if author.date_of_birth %} {{ author.date_of_death.strftime('%Y') }} {% else %} ---- {% endif %})</option>
+                                            - {% if author.date_of_death %} {{ author.date_of_death.strftime('%Y') }} {% else %} ---- {% endif %})</option>
                                     {% endfor %}
                                 </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-6">
-                                <label for="author_name" class="label-size col-form-label my-label">Lub dodaj nowego autora:</label>
+                                <label for="author_name" class="label-size col-form-label my-label">Lub dodaj nowego autora: *</label>
                             </div>
                             <div class="col-sm-3">
                                 <label for="author_date_of_birth" class="label-size col-form-label my-label">Data urodzenia:</label>
@@ -85,16 +85,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group row div-my-row">
-                    <div class="col-sm-3">
+                <div class="form-group row my-row">
+                    <div class="col-sm-3 my-bold-text">
                         <label for="author" class="label-size col-form-label">Kategorie:</label>
                     </div>
                     <div class="col-sm-9">
                         <fieldset>
-                            <legend class="label-size col-form-label my-label">Wybierz z listy</legend>
+                            <legend class="label-size col-form-label my-label">Wybierz z listy:</legend>
                             <div class="row">
                                 {% for category in categories_list %}
-                                <div class="col-sm-6 div-my-checkbox">
+                                <div class="col-sm-6 my-checkbox">
                                     <input type="checkbox" id="{{ category.id }}" name="categories" value="{{ category.id }}" {% if category.id in book.categories_set %} checked {% endif %}>
                                     <label for="{{ category.id }}">{{ category }}</label>
                                 </div>
@@ -113,9 +113,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group row div-my-row">
-                    <div class="col-sm-3">
-                        <label for="copies" class="label-size col-form-label">Ilość egzemplarzy:</label>
+                <div class="form-group row my-row">
+                    <div class="col-sm-3 my-bold-text">
+                        <label for="copies" class="label-size col-form-label">Ilość egzemplarzy: *</label>
                     </div>
                     <div class="col-sm-9">
                         <input type="number" class="form-control" name="copies" id="copies" min="1" step="1" value="{{ book.copies }}"/>
@@ -124,7 +124,7 @@
             </form>
         </div>
         <div>                
-            <img class="rounded mx-auto d-block img-thumbnail img-my-style" 
+            <img class="rounded mx-auto d-block img-thumbnail my-style" 
             src="{{ url_for('static', filename='images/edit_book.jpg') }}" alt="Edit book photo">
         </div>
     </div>

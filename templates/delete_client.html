@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% block title %} Usuń Klienta {% endblock %}
 {% block content %}
-    <div class="container div-my-container">
+    <div class="container my-container">
         <div class="mt-4 ml-4 mr-4">
             <form method="POST">
-                <div class="row border-bottom border-3 div-my-header">
+                <div class="row border-bottom border-3 my-header">
                     <div class="col-sm-9 mb-2">
                         <h4 class="color-header">{{ message }}</h4>
                     </div>
@@ -15,25 +15,29 @@
                     </div>
                 </div>
             </form>
-            <div class="row div-my-row">
+            <div class="row my-row">
                 <div class="col-sm-3">Imię:</div>
                 <div class="col-sm-9">{{ client.first_name }}</div>
             </div>
-            <div class="row div-my-row">
+            <div class="row my-row">
                 <div class="col-sm-3">Nazwisko:</div>
                 <div class="col-sm-9">{{ client.last_name }}</div>
             </div>
-            <div class="row div-my-row">
+            <div class="row my-row">
                 <div class="col-sm-3">Email:</div>
                 <div class="col-sm-9">{{ client.email }}</div>
             </div>
-            <div class="row div-my-row">
+            <div class="row my-row">
                 <div class="col-sm-3">Numer telefonu (+48):</div>
                 <div class="col-sm-9">{% if client.phone_number %} {{ client.phone_number }} {% else %} (brak danych) {% endif %}</div>
             </div>
+            <div class="row my-row">
+                <div class="col-sm-3">Uwaga:</div>
+                <div class="col-sm-9 my-error"><h5>Usuwając profil clienta usuwasz historię jego wypożyczeń !!!!!</h5></div>
+            </div>
         </div>
         <div>
-            <img class="rounded mx-auto d-block img-thumbnail img-my-style" 
+            <img class="rounded mx-auto d-block img-thumbnail my-style" 
             src="{{ url_for('static', filename='images/delete_client.jpg') }}" alt="Delete client photo">      
         </div>
     </div>

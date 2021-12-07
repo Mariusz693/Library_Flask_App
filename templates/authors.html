@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %} Autorzy {% endblock %}
 {% block content %}
-    <div class="container div-my-container">
+    <div class="container my-container">
         <table class="table">
             <thead>
                 <tr class="d-flex flex-wrap">
@@ -14,13 +14,13 @@
             </thead>
             <tbody>
                 {% for author in authors_list %}
-                <tr class="d-flex flex-wrap tr-my-table">
+                <tr class="d-flex flex-wrap my-table">
                     <td class="col-sm-1">{{ loop.index }}</td>
                     <th class="col-sm-6">{{ author.name }}</th>
                     <td class="col-sm-2">{% if author.date_of_birth %} {{ author.date_of_birth }} {% else %} (brak danych) {% endif %}</td>
                     <td class="col-sm-2">{% if author.date_of_death %} {{ author.date_of_death }} {% else %} (brak danych) {% endif %}</td>
                     <td class="col-sm-1 text-center">
-                        <a class="my-link" href="/details_author/{{ author.id }}/">profil</a>
+                        <a class="my-link" href="/details_author/{{ author.id }}/">Profil</a>
                     </td>
                 </tr>
                 {% endfor %}

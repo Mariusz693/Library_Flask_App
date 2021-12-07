@@ -1,7 +1,7 @@
 from operator import le
 import os
 from flask import Flask, request, render_template, redirect
-from flask_sqlalchemy import SQLAlchemy
+# from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from models import db
 from sqlalchemy.exc import IntegrityError
@@ -49,10 +49,14 @@ def add_author():
     message = 'Dodaj wpis nowego autora'
     if request.method == 'POST':
         name = request.form.get('name')
-        date_of_birth = request.form.get('date_of_birth') if request.form.get('date_of_birth') else None
-        date_of_death = request.form.get('date_of_death') if request.form.get('date_of_death') else None
+        date_of_birth = request.form.get('date_of_birth')
+        date_of_death = request.form.get('date_of_death')
         if len(name) > 2:
-            new_author = Author(name=name, date_of_birth=date_of_birth, date_of_death=date_of_death)
+            new_author = Author(
+                name=name, 
+                date_of_birth=date_of_birth if date_of_birth else None, 
+                date_of_death=date_of_death if date_of_death else None
+                )
             try:
                 db.session.add(new_author)
                 db.session.commit()
@@ -75,12 +79,12 @@ def edit_author(id_author):
     message = f'Zmień wpis autora "{author.name}"'
     if request.method == 'POST':
         name = request.form.get('name')
-        date_of_birth = request.form.get('date_of_birth') if request.form.get('date_of_birth') else None
-        date_of_death = request.form.get('date_of_death') if request.form.get('date_of_death') else None
+        date_of_birth = request.form.get('date_of_birth')
+        date_of_death = request.form.get('date_of_death')
         if len(name) > 3:
             author.name = name
-            author.date_of_birth = date_of_birth
-            author.date_of_death = date_of_death
+            author.date_of_birth = date_of_birth if date_of_birth else None
+            author.date_of_death = date_of_death if date_of_death else None
             try:
                 db.session.commit()
                 message = f'Zmieniono wpis autora "{name}"'
@@ -102,15 +106,20 @@ def delete_author(id_author):
     author = Author.query.get_or_404(id_author)
     message = 'Potwierdź usunięcie profilu autora'
     if request.method == 'POST':
-        try:
-            db.session.delete(author)
-            db.session.commit()
+        for book in author.books:
+            if book.borrowed_copies > 0:
+                message = 'Książki autora są wypożyczeniu, usuń gdy zostaną zwrócone'
+                break
+        else:
+            try:
+                db.session.delete(author)
+                db.session.commit()
 
-            return redirect('/authors/')
-        
-        except IntegrityError:
-            db.session.rollback()
-            message = f'Błąd w usuwaniu profilu'
+                return redirect('/authors/')
+            
+            except IntegrityError:
+                db.session.rollback()
+                message = f'Błąd w usuwaniu profilu'
         
     return render_template(
         'delete_author.html',
@@ -140,9 +149,12 @@ def add_client():
         if first_name and last_name:
             if phone_number == '' or validate_phone(phone_number):
                 if email and validate_email(email):
-                    new_client = Client(first_name, last_name, email)
-                    if phone_number:
-                        new_client.phone_number = phone_number
+                    new_client = Client(
+                        first_name=first_name, 
+                        last_name=last_name, 
+                        email=email, 
+                        phone_number=phone_number
+                        )
                     try:
                         db.session.add(new_client)
                         db.session.commit()
@@ -166,7 +178,7 @@ def add_client():
 @app.route("/edit_client/<int:id_client>/", methods=['GET', 'POST'])
 def edit_client(id_client):
     client = Client.query.get_or_404(id_client)
-    message = f'Zmień wpis clienta "{client}"'
+    message = f'Zmień wpis klienta "{client}"'
     if request.method == 'POST':
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
@@ -178,8 +190,7 @@ def edit_client(id_client):
                     client.first_name = first_name
                     client.last_name = last_name
                     client.email = email
-                    if phone_number:
-                        client.phone_number = phone_number
+                    client.phone_number = phone_number
                     try:
                         db.session.commit()
                         message = f'Zmieniono wpis klinta "{client}"'
@@ -205,15 +216,20 @@ def delete_client(id_client):
     client = Client.query.get_or_404(id_client)
     message = 'Potwierdź usunięcie profilu clienta'
     if request.method == 'POST':
-        try:
-            db.session.delete(client)
-            db.session.commit()
+        for loan in client.books:
+            if loan.return_date is None:
+                message = 'Klient posiada książki na wypożyczeniu, usuń gdy zwróci wszystkie'
+                break
+        else:
+            try:
+                db.session.delete(client)
+                db.session.commit()
 
-            return redirect('/clients/')
-        
-        except IntegrityError:
-            db.session.rollback()
-            message = 'Błąd w usuwaniu profilu'
+                return redirect('/clients/')
+            
+            except IntegrityError:
+                db.session.rollback()
+                message = 'Błąd w usuwaniu profilu'
         
     return render_template(
         'delete_client.html',
@@ -225,8 +241,10 @@ def delete_client(id_client):
 @app.route("/details_client/<int:id_client>/")
 def details_client(id_client):
     client = Client.query.get_or_404(id_client)
-    print(client.books)
-
+    # print(client.books)
+    # for item in client.books:
+    #     print(item.loan_date)
+    #     print(item.book)
     return render_template(
         'details_client.html',
         client=client
@@ -251,10 +269,10 @@ def categories():
 
             except IntegrityError:
                 db.session.rollback()
-                message = f'Ups... coś poszło nie tak, nie usunięto kategorię "{category_name}"'
+                message = 'Błąd w usuwaniu kategorii'
 
         elif len(name) > 2:
-            new_category = Category(name)
+            new_category = Category(name=name)
             try:
                 db.session.add(new_category)
                 db.session.commit()
@@ -307,11 +325,11 @@ def add_book():
                             authors_list=authors_list,
                             categories_list=categories_list
                             )
-                    author_book = Author(name)
-                    if date_of_birth:
-                        author_book.date_of_birth = date_of_birth
-                    if date_of_death:
-                        author_book.date_of_death = date_of_death       
+                    author_book = Author(
+                        name=name, 
+                        date_of_birth=date_of_birth if date_of_birth else None, 
+                        date_of_death=date_of_death if date_of_death else None
+                        )
                 else:
                     author_book = Author.query.filter_by(id=author).first()
                 
@@ -328,7 +346,7 @@ def add_book():
                             authors_list=authors_list,
                             categories_list=categories_list
                             )
-                    new_category = Category(new_category)
+                    new_category = Category(name=new_category)
                 
                 try:
                     if author == '':
@@ -338,7 +356,13 @@ def add_book():
                         db.session.add(new_category)
                         db.session.commit()
                         categories.append(str(new_category.id))
-                    new_book = Book(isbn, title, description, int(copies), author_book.id)
+                    new_book = Book(
+                        isbn=isbn, 
+                        title=title,
+                        description=description,
+                        copies=int(copies),
+                        author=author_book
+                        )
                     categories_set = Category.query.filter(Category.id.in_(categories))
                     new_book.categories.extend(categories_set)
                     db.session.add(new_book)
@@ -405,11 +429,11 @@ def edit_book(id_book):
                             authors_list=authors_list,
                             categories_list=categories_list
                             )
-                    author_book = Author(name)
-                    if date_of_birth:
-                        author_book.date_of_birth = date_of_birth
-                    if date_of_death:
-                        author_book.date_of_death = date_of_death       
+                    author_book = Author(
+                        name=name, 
+                        date_of_birth=date_of_birth if date_of_birth else None, 
+                        date_of_death=date_of_death if date_of_death else None
+                        )       
                 else:
                     author_book = Author.query.filter_by(id=author).first()
                 
@@ -427,7 +451,7 @@ def edit_book(id_book):
                             authors_list=authors_list,
                             categories_list=categories_list
                             )
-                    new_category = Category(new_category)
+                    new_category = Category(name=new_category)
 
                 try:
                     if author == '':
@@ -487,7 +511,7 @@ def delete_book(id_book):
                 db.session.rollback()
                 message = 'Błąd w usuwaniu książki'
         else:
-            message = 'Egzemplarze na wypożyczeniu, usuń gdy będą wszystkie'
+            message = 'Egzemplarze na wypożyczeniu, usuń gdy będą wszystkie zwrócone'
         
     return render_template(
         'delete_book.html',
@@ -517,54 +541,17 @@ def add_loan():
         book = request.form.get('book')
         client = request.form.get('client')
         loan_date = request.form.get('loan_date')
-        print(book)
-        print(client)
-        print(loan_date)
         book = Book.query.get_or_404(book)
         client = Client.query.get_or_404(client)
-        book.clients.client_id = client
-        print(book.clients.client_id)
-        book.clients.loan_date = loan_date
-        print(book.clients.loan_date)
-        new_loan = Books_Clients(book_id=book.id, client_id=client.id, loan_date=loan_date)
-        # new_loan.book_id = book.id
-        # new_loan.client_id = client.id
-        # new_loan.loan_date = loan_date
-        print(new_loan.book_id)
+        new_loan = Books_Clients(book=book, client=client, loan_date=loan_date)
         try:
             db.session.add(new_loan)
+            book.borrowed_copies += 1
             db.session.commit()
-            message = 'Dodano'
+            message = f'Dodano wpis wypożyczenia książki "{book}" - {client}'
         except IntegrityError:
             db.session.rollback()
-            message = 'Nie  dodano'
-        book_after = Book.query.get_or_404(book.id)
-        print(book_after.clients)
-        client_after = Client.query.get_or_404(client.id)
-        print(client_after.books)
-        # first_name = request.form.get('first_name')
-        # last_name = request.form.get('last_name')
-        # email = request.form.get('email')
-        # phone_number = request.form.get('phone_number')
-        # if first_name and last_name:
-        #     if phone_number == '' or validate_phone(phone_number):
-        #         if email and validate_email(email):
-        #             new_client = Client(first_name, last_name, email)
-        #             if phone_number:
-        #                 new_client.phone_number = phone_number
-        #             try:
-        #                 db.session.add(new_client)
-        #                 db.session.commit()
-        #                 message = f'Dodano wpis nowego klinta "{new_client}"'
-        #             except IntegrityError:
-        #                 db.session.rollback()
-        #                 message = f'Wpis email "{email}" już istnieje w bazie'
-        #         else:
-        #             message = 'Brak adresu email lub źle podany'
-        #     else:
-        #         message = 'Numer telefonu źle podany'
-        # else:
-        #     message = 'Brak imienia lub nawiska klienta'    
+            message = 'Błąd w dodawaniu wypożyczenia'
             
     return render_template(
         'add_loan.html',

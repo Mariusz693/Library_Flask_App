@@ -5,66 +5,79 @@ body {
     background: linear-gradient(to left, #ffffff, #dbe3de);
 }
 
-nav.navbar-my-style {
+nav.my-navbar {
     background-color: #dbe3de;
     border-bottom-style: solid;
     border-bottom-width: 5px;
     border-bottom-color: black;
 }
 
-footer.footer-my-style {
+footer.my-footer {
     background-color: black;
 }
 
-div.div-my-container {
+div.my-container {
     margin-top: 10px;
     margin-bottom: 75px;
 }
 
-tr.tr-my-table {
+tr.my-table {
     margin-top: 10px;
 }
 
-img.img-my-style {
+img.my-style {
     margin-top: 50px;
     margin-bottom: 100px;
 }
 
-div.div-my-header {
+div.my-header {
     margin-bottom: 20px;
 }
 
-div.div-my-row{
+div.my-row{
     margin-bottom: 20px;
 }
 
-li.li-my-list {
+li.my-list {
     margin-left: 15px;
     margin-bottom: 10px;
 }
 
-button.button-my-cross {
+button.my-button-cross {
     color: darkred;
     width: 70px;
     border-radius: 5px;
 }
 
-button.button-my-dodaj {
+button.my-button-add {
     background-color: darkgreen;
     color: white;
     width: 70px;
     border-radius: 5px;
 }
  
-div.div-my-checkbox {
+div.my-checkbox {
     margin-bottom: 5px;
 }
 
-.my-button {
+a.my-button {
+    margin-left: 20px;
+    align-self: center;
+}
+
+button.my-button {
     margin-left: 20px;
     align-self: center;
 }
 
 a.my-link {
     text-decoration: none;
+}
+
+div.my-error {
+    color: darkred;
+}
+
+div.my-bold-text {
+    font-weight: bold;
 }
