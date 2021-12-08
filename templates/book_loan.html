@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %} Historia wypożyczeń {% endblock %}
+{% block content %}
+    <div class="container my-container">
+        <div class="mt-4 ml-4 mr-4">
+            <div class="row border-bottom border-3 my-header">
+                {% if request.args.get('loaned') %}
+                <div class="col-sm-9 mb-2">
+                    <h4 class="color-header">Aktualne wypożyczenia książki "{{ book }}"</h4>
+                </div>
+                <div class="col-sm-3 d-flex justify-content-end mb-2">
+                    <a href="/book_loan/{{ book.id }}/" class="btn btn-success my-button">Wszystkie</a>
+                    <a href="/details_book/{{ book.id }}/" class="btn btn-info my-button">Powrót</a>
+                    <a href="/books/" class="btn btn-info my-button">Książki</a>
+                </div>
+                {% else %}
+                <div class="col-sm-9 mb-2">
+                    <h4 class="color-header">Historia wypożyczeń książki "{{ book }}"</h4>
+                </div>
+                <div class="col-sm-3 d-flex justify-content-end mb-2">
+                    <a href="/book_loan/{{ book.id }}/?loaned=True" class="btn btn-success my-button">Aktualne</a>
+                    <a href="/details_book/{{ book.id }}/" class="btn btn-info my-button">Powrót</a>
+                    <a href="/books/" class="btn btn-info my-button">Książki</a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="row">
+                <table class="table">
+                    <thead>
+                        <tr class="d-flex flex-wrap">
+                            <th class="col-sm-1">Lp.</th>
+                            <th class="col-sm-5">Imię i Nazwisko klienta</th>
+                            <th class="col-sm-3 text-center">Data Wypożyczenia</th>
+                            <th class="col-sm-3 text-center">Data Zwrotu</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for loan in book.clients %}
+                        <tr class="d-flex flex-wrap my-table">
+                            <td class="col-sm-1">{{ loop.index }}</td>
+                            <th class="col-sm-5">{{ loan.client }}</th>
+                            <td class="col-sm-3 text-center">{{ loan.loan_date }}</td>
+                            <td class="col-sm-3 text-center">
+                                {% if loan.return_date %} 
+                                    {{ loan.return_date }} 
+                                {% else %} 
+                                    <a class="my-link" href="/delete_loan/{{ loan.id }}/?next=/book_loan/{{ book.id }}">Brak zwrotu !</a> 
+                                {% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>                     
+            </div>
+        </div>                
+    </div>
+{% endblock content %}

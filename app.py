@@ -561,5 +561,52 @@ def add_loan():
         )
 
 
+@app.route("/delete_loan/<int:id_loan>/", methods=['GET', 'POST'])
+def delete_loan(id_loan):
+    message = 'Zakończ wypożyczenie książki'
+    loan = Books_Clients.query.get(id_loan)
+    next = request.args.get('next')
+
+    print(loan)
+    print(next)
+
+    if request.method == 'POST':
+        book = request.form.get('book')
+        client = request.form.get('client')
+        loan_date = request.form.get('loan_date')
+        book = Book.query.get_or_404(book)
+        client = Client.query.get_or_404(client)
+        new_loan = Books_Clients(book=book, client=client, loan_date=loan_date)
+        try:
+            db.session.add(new_loan)
+            book.borrowed_copies += 1
+            db.session.commit()
+            message = f'Dodano wpis wypożyczenia książki "{book}" - {client}'
+        except IntegrityError:
+            db.session.rollback()
+            message = 'Błąd w dodawaniu wypożyczenia'
+            
+    return render_template(
+        'delete_loan.html',
+        message=message,
+        loan=loan
+        )
+
+
+@app.route("/book_loan/<int:id_book>/")
+def book_loan(id_book):
+    book = Book.query.get_or_404(id_book)
+    loaned = request.args.get('loaned')
+    if loaned == 'True':
+        for item in book.clients:
+            print(item.return_date)
+        book.clients = [item for item in book.clients if item.return_date == None]
+    
+    return render_template(
+        'book_loan.html',
+        book=book
+        )
+
+
 if __name__ == '__main__':
     app.run(port=8000, debug=True)
