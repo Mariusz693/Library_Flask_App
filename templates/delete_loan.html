@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %} Zakończ Wypożyczenie {% endblock %}
+{% block content %}
+    <div class="container my-container">
+        <div class="mt-4 ml-4 mr-4">
+            <form method="POST">
+                <div class="row border-bottom border-3 my-header">
+                    <div class="col-sm-9 mb-2">
+                        <h4 class="color-header">{{ message }}</h4>
+                    </div>
+                    <div class="col-sm-3 mb-2 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-success my-button">Zapisz</button>
+                        <a href="{{ request.args.get('next') }}" class="btn btn-info my-button">Powrót</a>
+                    </div>
+                </div>                        
+                <div class="row my-row">
+                    <div class="col-sm-3 my-bold-text">Książka:</div>
+                    <div class="col-sm-9">{{ loan.book }}</div>
+                </div>
+                <div class="row my-row">
+                    <div class="col-sm-3 my-bold-text">Klient:</div>
+                    <div class="col-sm-9">{{ loan.client }}</div>
+                </div>
+                <div class="row my-row">
+                    <div class="col-sm-3 my-bold-text">Data Wypożyczenia:</div>
+                    <div class="col-sm-9">{{ loan.loan_date }}</div>
+                </div>
+                <div class="form-group row my-row">
+                    <div class="col-sm-3 my-bold-text">
+                        <label for="return_date" class="label-size col-form-label">Data Zwrotu: *</label>
+                    </div>
+                    <div class="col-sm-9">
+                        <input type="date" class="form-control" name="return_date" id="return_date"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div>                
+            <img class="rounded mx-auto d-block img-thumbnail my-style" 
+            src="{{ url_for('static', filename='images/delete_loan.jpg') }}" alt="Delete loan photo">
+        </div>
+    </div>
+{% endblock content %}

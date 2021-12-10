@@ -35,7 +35,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for loan in book.clients %}
+                        {% for loan in loan_list %}
                         <tr class="d-flex flex-wrap my-table">
                             <td class="col-sm-1">{{ loop.index }}</td>
                             <th class="col-sm-5">{{ loan.client }}</th>
@@ -46,6 +46,16 @@
                                 {% else %} 
                                     <a class="my-link" href="/delete_loan/{{ loan.id }}/?next=/book_loan/{{ book.id }}">Brak zwrotu !</a> 
                                 {% endif %}</td>
+                        </tr>
+                        {% else %}
+                        <tr class="d-flex flex-wrap">
+                            <th colspan="4" class="col-sm-12">
+                                {% if request.args.get('loaned') %}
+                                    Brak aktualnie wypożyczonych egzemplarzy !!!
+                                {% else %}
+                                    Brak historii wypożyczeń !!!
+                                {% endif %}
+                            </th>
                         </tr>
                         {% endfor %}
                     </tbody>
