@@ -3,18 +3,18 @@
 {% block content %}
     <div class="container my-container">
         <div class="mt-4 ml-4 mr-4">
-            <form action="/book_loan/{{ book.id }}/" method="POST">
+            <form action="/client_loan/{{ client.id }}/" method="POST">
                 <div class="row border-bottom border-3 my-header">
                     <div class="col-sm-9 mb-2">
                         <h4 class="color-header">{{ message }}</h4>
                     </div>
                     <div class="col-sm-3 d-flex justify-content-end mb-2">
                         {% if request.args.get('loaned') %}
-                        <a href="/book_loan/{{ book.id }}/" class="btn btn-success my-button">Wszystkie</a>
+                        <a href="/client_loan/{{ client.id }}/" class="btn btn-success my-button">Wszystkie</a>
                         {% else %}
-                        <a href="/book_loan/{{ book.id }}/?loaned=True" class="btn btn-success my-button">Aktualne</a>
+                        <a href="/client_loan/{{ client.id }}/?loaned=True" class="btn btn-success my-button">Aktualne</a>
                         {% endif %}
-                        <a href="/details_book/{{ book.id }}/" class="btn btn-info my-button">Powrót</a>
+                        <a href="/details_client/{{ client.id }}/" class="btn btn-info my-button">Powrót</a>
                         <button type="submit" class="btn btn-danger my-button">Usuń</button>
                     </div>
                 </div>
@@ -23,7 +23,7 @@
                         <thead>
                             <tr class="d-flex flex-wrap">
                                 <th class="col-sm-1">Lp.</th>
-                                <th class="col-sm-5">Imię i Nazwisko klienta</th>
+                                <th class="col-sm-5">Książka</th>
                                 <th class="col-sm-2 text-center">Data Wypożyczenia</th>
                                 <th class="col-sm-2 text-center">Data Zwrotu</th>
                                 <th class="col-sm-2 text-center">Zaznacz do usunięcia</th>
@@ -33,13 +33,13 @@
                             {% for loan in loan_list %}
                             <tr class="d-flex flex-wrap my-table">
                                 <td class="col-sm-1">{{ loop.index }}</td>
-                                <th class="col-sm-5">{{ loan.client }}</th>
+                                <th class="col-sm-5"><a class="my-link" href="/details_book/{{ loan.book.id }}/">"{{ loan.book }}"</a></th>
                                 <td class="col-sm-2 text-center">{{ loan.loan_date.strftime('%d.%m.%Y') }}</td>
                                 <td class="col-sm-2 text-center">
                                     {% if loan.return_date %} 
                                         {{ loan.return_date.strftime('%d.%m.%Y') }} 
                                     {% else %} 
-                                        <a class="my-link" href="/delete_loan/{{ loan.id }}/?next=/book_loan/{{ book.id }}/">Brak zwrotu !</a> 
+                                        <a class="my-link" href="/delete_loan/{{ loan.id }}/?next=/client_loan/{{ client.id }}/">Brak zwrotu !</a> 
                                     {% endif %}
                                 </td>
                                 <td class="col-sm-2 text-center">

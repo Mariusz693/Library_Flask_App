@@ -25,7 +25,9 @@
                     </div>
                     <div class="row my-row">
                         <div class="col-sm-4 my-bold-text">Autor:</div>
-                        <div class="col-sm-8">{{ book.author }}</div>
+                        <div class="col-sm-8">
+                            <a class="my-link" href="/details_author/{{ book.author.id }}/">{{ book.author }}</a>
+                        </div>
                     </div>
                     <div class="row my-row">
                         <div class="col-sm-4 my-bold-text">Opis:</div>
@@ -44,13 +46,8 @@
                         <div class="col-sm-8">{{ book.borrowed_copies }}</div>
                     </div>
                     <div class="row my-row">
-                        <div class="col-sm-4 my-bold-text">Historia wypożyczeń:</div>
-                        <div class="col-sm-8">
-                            {% if book.clients %}
-                            <a class="btn btn-info" href='/book_loan/{{ book.id }}/'>Sprawdź</a>
-                            {% else %}
-                            Brak historii wypożyczeń !!!
-                            {% endif %}
+                        <div class="col-sm-12">
+                            <a class="btn btn-info" href="/book_loan/{{ book.id }}/">Historia wypożyczeń</a>
                         </div>
                     </div>
                 </div>

@@ -21,11 +21,11 @@
             </div>
             <div class="row my-row">
                 <div class="col-sm-3">Data urodzenia:</div>
-                <div class="col-sm-9">{% if author.date_of_birth %} {{ author.date_of_birth }} {% else %} (brak danych) {% endif %}</div>
+                <div class="col-sm-9">{% if author.date_of_birth %} {{ author.date_of_birth.strftime('%d.%m.%Y') }} {% else %} (brak danych) {% endif %}</div>
             </div>
             <div class="row my-row">
                 <div class="col-sm-3">Data śmierci:</div>
-                <div class="col-sm-9">{% if author.date_of_death %} {{ author.date_of_death }} {% else %} (brak danych) {% endif %}</div>
+                <div class="col-sm-9">{% if author.date_of_death %} {{ author.date_of_death.strftime('%d.%m.%Y') }} {% else %} (brak danych) {% endif %}</div>
             </div>
             <div class="row my-row">
                 <div class="col-sm-3">Uwaga:</div>

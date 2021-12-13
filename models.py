@@ -52,7 +52,7 @@ class Author(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=True, nullable=False)
-    date_of_birth = db.Column(db.Date, nullable=True)
+    date_of_birth = db.Column(db.Date, nullable=False)
     date_of_death = db.Column(db.Date, nullable=True)
     books = db.relationship('Book', back_populates='author', cascade='all, delete')
 

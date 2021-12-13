@@ -18,7 +18,7 @@
                 {% for book in books_list %}
                 <tr class="d-flex flex-wrap my-table">
                     <td class="col-sm-1">{{ loop.index }}</td>
-                    <th class="col-sm-3">{{ book.title }}</th>
+                    <th class="col-sm-3">"{{ book.title }}"</th>
                     <td class="col-sm-2">{{ book.isbn }}</td>
                     <td class="col-sm-3">{{ book.author }}</td>
                     <td class="col-sm-1 text-center">{{ book.copies }}</td>

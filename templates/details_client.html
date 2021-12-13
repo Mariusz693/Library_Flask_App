@@ -32,26 +32,23 @@
                         <div class="col-sm-8">{% if client.phone_number %} (+48) {{ client.phone_number }} {% else %} (brak danych) {% endif %}</div>
                     </div>
                     <div class="row my-row">
-                        <div class="col-sm-4 my-bold-text">Wypożyczone książki:</div>
-                        <div class="col-sm-8">{{ client.books|count }}
+                        <div class="col-sm-4 my-bold-text">Wypożyczonych aktualnie:</div>
+                        <div class="col-sm-8">{{ actuall_loan|count }}</div>
+                    </div>
+                    {% if actuall_loan %}
+                    <div class="row my-row">
+                        <div class="col-sm-4 my-bold-text">Tytuły na wypożyczeniu:</div>
+                        <div class="col-sm-8">
+                            {% for loan in actuall_loan %}
+                            <a class="my-link" href='/details_book/{{ loan.book_id }}/'>"{{ loan.book }}"</a>
+                            {% if not loop.last %},&nbsp;{% endif %}
+                            {% endfor %}
                         </div>
                     </div>
+                    {% endif %}
                     <div class="row my-row">
-                        <div class="col-sm-4 my-bold-text">Historia wypożyczeń:</div>
-                        <div class="col-sm-8"><a class="my-link" href='/client_books/{{ client.id }}/'>Sprawdź</a></div>
-                    </div>
-                    <div class="row my-row">
-                        <div class="col-sm-4 my-bold-text">Aktualnie wypożyczone:</div>
-                        <div class="col-sm-8">
-                            <ul class="list-group">
-                                <div class="row">
-                                    {% for loan in client.books %}
-                                    <div class="col-sm-6">
-                                        <li class="my-list"><a class="my-link" href='/details_book/{{ loan.book_id }}/'>"{{ loan.book }}"</a></li>
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                            </ul>
+                        <div class="col-sm-12">
+                            <a class="btn btn-info" href="/client_loan/{{ client.id }}/">Historia wypożyczeń</a>
                         </div>
                     </div>
                 </div>

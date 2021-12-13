@@ -1,3 +1,4 @@
+from datetime import datetime
 
 
 def validate_phone(phone_number):
@@ -43,3 +44,24 @@ def validate_email(email):
         return False
 
     return True
+
+
+def validate_date(date_of_birth, date_of_death):
+    
+    if date_of_birth == '':
+
+        return 'Brak daty urodzenia autora - uzupełnij ponownie'
+    
+    if datetime.strptime(date_of_birth, '%Y-%m-%d').date() > datetime.today().date():
+
+        return 'Data urodzenia autora nie może być datą przyszłą - uzupełnij ponownie'
+    
+    if date_of_death and datetime.strptime(date_of_death, '%Y-%m-%d').date() > datetime.today().date():
+
+        return 'Data śmierci autora nie może być datą przyszłą - uzupełnij ponownie'
+    
+    if date_of_death and datetime.strptime(date_of_birth, '%Y-%m-%d').date() > datetime.strptime(date_of_death, '%Y-%m-%d').date():
+
+        return 'Data urodzenia autora nie może być większa od daty śmierci - uzupełnij ponownie'
+    
+    return False
