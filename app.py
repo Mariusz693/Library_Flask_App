@@ -105,7 +105,9 @@ def edit_author(id_author):
             author.date_of_death = date_of_death if date_of_death else None
             try:
                 db.session.commit()
-                message = f'Zmieniono wpis autora - {name}'
+                
+                return redirect(f'/details_author/{author.id}/')
+            
             except IntegrityError:
                 db.session.rollback()
                 message = f'Wpis autora już istnieje w bazie danych - {name} - uzupełnij ponownie'
@@ -213,7 +215,9 @@ def edit_client(id_client):
                     client.phone_number = phone_number
                     try:
                         db.session.commit()
-                        message = f'Zmieniono wpis klinta - {client}'
+
+                        return redirect(f'/details_client/{client.id}/')
+
                     except IntegrityError:
                         db.session.rollback()
                         message = f'Wpis email klienta już istnieje w bazie - {email} - uzupełnij ponownie'
@@ -496,7 +500,9 @@ def edit_book(id_book):
                         categories_set = Category.query.filter(Category.id.in_(categories))
                         book.categories.extend(categories_set)
                         db.session.commit()
-                        message = f'Zmieniono wpis książki "{book}"'
+
+                        return redirect(f'/details_book/{book.id}/')
+
                     except IntegrityError:
                         db.session.rollback()
                         message = f'Wpis książki o numerze ISBN {isbn} już istnieje w bazie danych - uzupełnij ponownie'
@@ -559,7 +565,8 @@ def details_book(id_book):
 
 @app.route("/add_loan/", methods=['GET', 'POST'])
 def add_loan():
-    message = 'Dodaj wypożyczenie książki'
+    today_date = datetime.now().date()
+    message = f'Dodaj wypożyczenie książki z dniem dzisiejszym'
     books_all = Book.query.order_by(Book.title).all()
     books_list = [book for book in books_all if book.copies > book.borrowed_copies]
     clients_list = Client.query.order_by(Client.last_name).all()
@@ -567,23 +574,22 @@ def add_loan():
     if request.method == 'POST':
         book = request.form.get('book')
         client = request.form.get('client')
-        loan_date = request.form.get('loan_date')
         if book:
             if client:
-                if loan_date:
-                    book = Book.query.get_or_404(book)
-                    client = Client.query.get_or_404(client)
-                    new_loan = Books_Clients(book=book, client=client, loan_date=loan_date)
+                book = Book.query.get_or_404(book)
+                client = Client.query.get_or_404(client)
+                if Books_Clients.query.filter_by(book=book).filter_by(client=client).filter_by(return_date=None).first():
+                    message = 'Klient ma aktulanie tą książkę na wypożyczeniu'
+                else:
+                    new_loan = Books_Clients(book=book, client=client, loan_date=today_date)
                     try:
                         db.session.add(new_loan)
                         book.borrowed_copies += 1
                         db.session.commit()
-                        message = f'Dodano wpis wypożyczenia książki "{book}" - {client}'
+                        message = f'Dodano wypożyczenie książki "{book}" - {client}'
                     except IntegrityError:
                         db.session.rollback()
                         message = 'Błąd w dodawaniu wypożyczenia'
-                else:
-                    message = 'Brak daty wypożyczenia - uzupełnij ponownie'
             else:
                 message = 'Brak wybranego klienta - uzupełnij ponownie'
         else:
@@ -593,40 +599,38 @@ def add_loan():
         'add_loan.html',
         message=message,
         books_list=books_list,
-        clients_list=clients_list
+        clients_list=clients_list,
+        today_date=today_date
         )
 
 
-@app.route("/delete_loan/<int:id_loan>/", methods=['GET', 'POST'])
-def delete_loan(id_loan):
-    message = 'Zapisz zwrot książki'
+@app.route("/return_loan/<int:id_loan>/", methods=['GET', 'POST'])
+def return_loan(id_loan):
+    today_date = datetime.now().date()
+    message = 'Zapisz zwrot książki z dniem dzisiejszym'
     loan = Books_Clients.query.get(id_loan)
     next = request.args.get('next')
 
     if request.method == 'POST':
-        return_date = request.form.get('return_date')
-        if return_date:
-            return_date = datetime.strptime(return_date, '%Y-%m-%d').date()
-            if return_date > loan.loan_date:            
-                try:
-                    loan.return_date = return_date
-                    loan.book.borrowed_copies -= 1
-                    db.session.commit()
+        if today_date >= loan.loan_date:            
+            try:
+                loan.return_date = today_date
+                loan.book.borrowed_copies -= 1
+                db.session.commit()
 
-                    return redirect(next)
+                return redirect(next)
 
-                except IntegrityError:
-                    db.session.rollback()
-                    message = 'Błąd w dodawaniu zwrotu'
-            else:
-                message = 'Data zwrotu nie może być przed wypożyczeniem - uzupełnij ponownie'
+            except IntegrityError:
+                db.session.rollback()
+                message = 'Błąd w dodawaniu zwrotu'
         else:
-            message = 'Brak daty zwrotu - uzupełnij ponownie'
+            message = 'Błąd daty zwrotu - spróbuj ponownie'
 
     return render_template(
-        'delete_loan.html',
+        'return_loan.html',
         message=message,
-        loan=loan
+        loan=loan,
+        today_date=today_date
         )
 
 
@@ -635,7 +639,8 @@ def book_loan(id_book):
     book = Book.query.get_or_404(id_book)
     loaned = request.args.get('loaned')
     message = f'Historia wypożyczeń książki - "{book}"'
-    loan_list = Books_Clients.query.filter_by(book=book).order_by(Books_Clients.loan_date.asc()).all()
+    loan_list = Books_Clients.query.filter_by(book=book).order_by(Books_Clients.loan_date.desc(), 
+    Books_Clients.return_date.desc()).all()
     if loaned == 'True':
         loan_list = [item for item in loan_list if item.return_date == None]
         message = f'Aktualne wypożyczenia książki - "{book}"'
@@ -653,7 +658,8 @@ def book_loan(id_book):
                     db.session.delete(loan)
                 db.session.commit()
                 message = f'Usunięto, historia wypożyczeń książki - "{book}"'
-                loan_list = Books_Clients.query.filter_by(book=book).order_by(Books_Clients.loan_date.asc()).all()
+                loan_list = Books_Clients.query.filter_by(book=book).order_by(Books_Clients.loan_date.desc(), 
+                Books_Clients.return_date.desc()).all()
             except IntegrityError:
                 db.session.rollback()
                 message = 'Błąd w usuwaniu historii'
@@ -670,9 +676,9 @@ def book_loan(id_book):
 def client_loan(id_client):
     client = Client.query.get_or_404(id_client)
     loaned = request.args.get('loaned')
-    loan_list = Books_Clients.query.filter_by(client=client).order_by(Books_Clients.loan_date.asc()).all()
     message = f'Historia wypożyczeń klienta - {client}'
-    loan_list = Books_Clients.query.filter_by(client=client).order_by(Books_Clients.loan_date.asc()).all()
+    loan_list = Books_Clients.query.filter_by(client=client).order_by(Books_Clients.loan_date.desc(), 
+    Books_Clients.return_date.desc()).all()
     if loaned == 'True':
         loan_list = [item for item in loan_list if item.return_date == None]
         message = f'Aktualne wypożyczenia klienta - {client}'
@@ -690,7 +696,8 @@ def client_loan(id_client):
                     db.session.delete(loan)
                 db.session.commit()
                 message = f'Usunięto, historia wypożyczeń klienta - {client}'
-                loan_list = Books_Clients.query.filter_by(client=client).order_by(Books_Clients.loan_date.asc()).all()
+                loan_list = Books_Clients.query.filter_by(client=client).order_by(Books_Clients.loan_date.desc(), 
+                Books_Clients.return_date.desc()).all()
             except IntegrityError:
                 db.session.rollback()
                 message = 'Błąd w usuwaniu historii'
@@ -700,6 +707,43 @@ def client_loan(id_client):
         client=client,
         loan_list=loan_list,
         message=message
+        )
+
+
+@app.route("/add_client_loan/<int:client_id>/", methods=['GET', 'POST'])
+def add_client_loan(client_id):
+    today_date = datetime.now().date()
+    client = Client.query.get_or_404(client_id)
+    message = 'Dodaj wypożyczenie książki'
+    books_all = Book.query.order_by(Book.title).all()
+    books_list = [book for book in books_all if book.copies > book.borrowed_copies]
+    
+    if request.method == 'POST':
+        book = request.form.get('book')
+        loan_date = request.form.get('loan_date')
+        if book:
+            book = Book.query.get_or_404(book)
+            if Books_Clients.query.filter_by(book=book).filter_by(client=client).filter_by(return_date=None).first():
+                message = 'Klient ma aktulanie tą książkę na wypożyczeniu'
+            else:
+                new_loan = Books_Clients(book=book, client=client, loan_date=today_date)
+                try:
+                    db.session.add(new_loan)
+                    book.borrowed_copies += 1
+                    db.session.commit()
+                    message = f'Dodano wypożyczenie książki "{book}"'
+                except IntegrityError:
+                    db.session.rollback()
+                    message = 'Błąd w dodawaniu wypożyczenia'
+        else:
+            message = 'Brak wybranej książki - uzupełnij ponownie'
+
+    return render_template(
+        'add_client_loan.html',
+        message=message,
+        books_list=books_list,
+        client=client,
+        today_date=today_date
         )
 
 

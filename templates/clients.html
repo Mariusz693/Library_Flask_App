@@ -22,7 +22,7 @@
                     <td class="col-sm-3">{{ client.email }}</td>
                     <td class="col-sm-2">{% if client.phone_number %} (+48) {{ client.phone_number }} {% else %} (brak danych) {% endif %}</td>
                     <td class="col-sm-1 text-center">
-                        <a class="my-link" href="/details_client/{{ client.id }}/">Profil</a>
+                        <a href="/details_client/{{ client.id }}/" class="my-link">Profil</a>
                     </td>
                 </tr>
                 {% endfor %}

@@ -3,15 +3,19 @@
 {% block content %}
     <div class="container my-container">
         <div class="mt-4 ml-4 mr-4">
-            <form action="/add_loan/" method="POST">
+            <form action="/add_client_loan/{{ client.id }}/" method="POST">
                 <div class="row border-bottom border-3 my-header">
                     <div class="col-sm-9 mb-2">
                         <h4 class="color-header">{{ message }}</h4>
                     </div>
                     <div class="col-sm-3 mb-2 d-flex justify-content-end">
                         <button type="submit" class="btn btn-success my-button">Zapisz</button>
-                        <a href="/" class="btn btn-info my-button">Powrót</a>
+                        <a href="/details_client/{{ client.id }}/" class="btn btn-info my-button">Powrót</a>
                     </div>
+                </div>
+                <div class="row my-row">
+                    <div class="col-sm-3 my-bold-text">Klient:</div>
+                    <div class="col-sm-9 my-bold-text">{{ client }}</div>
                 </div>
                 <div class="row my-row">
                     <div class="col-sm-3 my-bold-text">Dzisiejsza data:</div>
@@ -26,19 +30,6 @@
                             <option value="">-----------------</option>
                             {% for book in books_list %}
                                 <option value="{{ book.id }}">{{ book }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group row my-row">
-                    <div class="col-sm-3 my-bold-text">
-                        <label for="client" class="label-size col-form-label">Wybierz klienta: *</label>
-                    </div>
-                    <div class="col-sm-9">
-                        <select class="form-control" name="client" id="client">
-                            <option value="">-----------------</option>
-                            {% for client in clients_list %}
-                                <option value="{{ client.id }}">{{ client }}</option>
                             {% endfor %}
                         </select>
                     </div>

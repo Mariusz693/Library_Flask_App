@@ -33,13 +33,15 @@
                             {% for loan in loan_list %}
                             <tr class="d-flex flex-wrap my-table">
                                 <td class="col-sm-1">{{ loop.index }}</td>
-                                <th class="col-sm-5"><a class="my-link" href="/details_book/{{ loan.book.id }}/">"{{ loan.book }}"</a></th>
+                                <th class="col-sm-5">
+                                    <a href="/details_book/{{ loan.book.id }}/" class="my-link">"{{ loan.book }}"</a>
+                                </th>
                                 <td class="col-sm-2 text-center">{{ loan.loan_date.strftime('%d.%m.%Y') }}</td>
                                 <td class="col-sm-2 text-center">
                                     {% if loan.return_date %} 
                                         {{ loan.return_date.strftime('%d.%m.%Y') }} 
                                     {% else %} 
-                                        <a class="my-link" href="/delete_loan/{{ loan.id }}/?next=/client_loan/{{ client.id }}/">Brak zwrotu !</a> 
+                                        <a href="/return_loan/{{ loan.id }}/?next=/client_loan/{{ client.id }}/" class="my-link">Brak zwrotu !</a> 
                                     {% endif %}
                                 </td>
                                 <td class="col-sm-2 text-center">

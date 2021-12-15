@@ -34,7 +34,9 @@
                                 <div class="row">
                                     {% for book in author.books %}
                                     <div class="col-sm-6">
-                                        <li class="my-list"><a class="my-link" href='/details_book/{{ book.id }}/'>"{{ book.title }}"</a></li>
+                                        <li class="my-list">
+                                            <a href="/details_book/{{ book.id }}/" class="my-link">"{{ book.title }}"</a>
+                                        </li>
                                     </div>
                                     {% endfor %}
                                 </div>

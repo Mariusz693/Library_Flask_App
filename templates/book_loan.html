@@ -39,7 +39,7 @@
                                     {% if loan.return_date %} 
                                         {{ loan.return_date.strftime('%d.%m.%Y') }} 
                                     {% else %} 
-                                        <a class="my-link" href="/delete_loan/{{ loan.id }}/?next=/book_loan/{{ book.id }}/">Brak zwrotu !</a> 
+                                        <a href="/return_loan/{{ loan.id }}/?next=/book_loan/{{ book.id }}/" class="my-link">Brak zwrotu !</a> 
                                     {% endif %}
                                 </td>
                                 <td class="col-sm-2 text-center">
