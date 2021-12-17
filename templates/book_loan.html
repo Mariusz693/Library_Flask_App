@@ -33,7 +33,9 @@
                             {% for loan in loan_list %}
                             <tr class="d-flex flex-wrap my-table">
                                 <td class="col-sm-1">{{ loop.index }}</td>
-                                <th class="col-sm-5">{{ loan.client }}</th>
+                                <th class="col-sm-5">
+                                    <a href="/details_client/{{ loan.client.id }}/" class="my-link">{{ loan.client }}</a>
+                                </th>
                                 <td class="col-sm-2 text-center">{{ loan.loan_date.strftime('%d.%m.%Y') }}</td>
                                 <td class="col-sm-2 text-center">
                                     {% if loan.return_date %} 

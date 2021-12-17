@@ -32,6 +32,8 @@ img.my-style {
 
 div.my-header {
     margin-bottom: 20px;
+    margin-right: 2.5px;
+    margin-left: 2.5px;
 }
 
 div.my-row{
@@ -80,4 +82,12 @@ div.my-error {
 
 div.my-bold-text {
     font-weight: bold;
+}
+
+input[type=checkbox] {
+    transform: scale(1.25);
+}
+
+input.my-search-input {
+    max-width: 300px;
 }

@@ -30,7 +30,11 @@ def index():
 
 @app.route("/books/")
 def books():
-    books_list = Book.query.order_by(Book.title).all()
+    search = request.args.get('search')
+    if search:
+        books_list = Book.query.filter(Book.title.ilike(f'{search}%')).all()
+    else:
+        books_list = Book.query.order_by(Book.title).all()
     
     return render_template(
         'books.html',
@@ -40,7 +44,11 @@ def books():
 
 @app.route("/authors/")
 def authors():
-    authors_list = Author.query.order_by(Author.name).all()
+    search = request.args.get('search')
+    if search:
+        authors_list = Author.query.filter(Author.name.ilike(f'{search}%')).all()
+    else:
+        authors_list = Author.query.order_by(Author.name).all()
     
     return render_template(
         'authors.html',
@@ -50,7 +58,11 @@ def authors():
 
 @app.route("/clients/")
 def clients():
-    clients_list = Client.query.order_by(Client.last_name).all()
+    search = request.args.get('search')
+    if search:
+        clients_list = Client.query.filter(Client.last_name.ilike(f'{search}%')).all()
+    else:
+        clients_list = Client.query.order_by(Client.last_name).all()
     
     return render_template(
         'clients.html',
@@ -639,8 +651,8 @@ def book_loan(id_book):
     book = Book.query.get_or_404(id_book)
     loaned = request.args.get('loaned')
     message = f'Historia wypożyczeń książki - "{book}"'
-    loan_list = Books_Clients.query.filter_by(book=book).order_by(Books_Clients.loan_date.desc(), 
-    Books_Clients.return_date.desc()).all()
+    loan_list = Books_Clients.query.filter_by(book=book).order_by(
+        Books_Clients.return_date.desc(), Books_Clients.loan_date.desc()).all()
     if loaned == 'True':
         loan_list = [item for item in loan_list if item.return_date == None]
         message = f'Aktualne wypożyczenia książki - "{book}"'
@@ -677,8 +689,8 @@ def client_loan(id_client):
     client = Client.query.get_or_404(id_client)
     loaned = request.args.get('loaned')
     message = f'Historia wypożyczeń klienta - {client}'
-    loan_list = Books_Clients.query.filter_by(client=client).order_by(Books_Clients.loan_date.desc(), 
-    Books_Clients.return_date.desc()).all()
+    loan_list = Books_Clients.query.filter_by(client=client).order_by(
+        Books_Clients.return_date.desc(), Books_Clients.loan_date.desc()).all()
     if loaned == 'True':
         loan_list = [item for item in loan_list if item.return_date == None]
         message = f'Aktualne wypożyczenia klienta - {client}'
