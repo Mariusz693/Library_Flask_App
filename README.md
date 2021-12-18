@@ -2,9 +2,9 @@
 
 Flask Web library application.
 
-Landing Page                                      |Institutions
+Landing Page                                      |Categories
 :------------------------------------------------:|:--------------------------------------------------:
-![PortfolioLab](https://snipboard.io/hFg9kI.jpg)  |  ![PortfolioLab](https://snipboard.io/1Ek4zU.jpg)
+![PortfolioLab](https://snipboard.io/hFg9kI.jpg)  |  ![Library_FlaskApp](../main/screenshots/categories.png)
 Add Donation                                      |Add Donation
 ![PortfolioLab](https://snipboard.io/9koxyU.jpg)  |  ![PortfolioLab](https://snipboard.io/muHo7a.jpg)
 User profile                                      |User profile
