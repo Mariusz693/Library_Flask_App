@@ -1,12 +1,9 @@
-from operator import le
 import os
 from datetime import datetime
 from flask import Flask, request, render_template, redirect
-# from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from models import db
 from sqlalchemy.exc import IntegrityError
-# from flask_wtf import CSRFProtect, csrf
 from validators import validate_phone, validate_email, validate_isbn, validate_date
 
 load_dotenv()
@@ -17,7 +14,6 @@ app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
-# csrf = CSRFProtect(app)
 
 from models import Book, Client, Category, Author, Books_Clients
 
@@ -659,22 +655,25 @@ def book_loan(id_book):
     
     if request.method == 'POST':
         delete_loan = request.form.getlist('delete_loan')
-        delete_loan = Books_Clients.query.filter(Books_Clients.id.in_(delete_loan))
-        for loan in delete_loan:
-            if loan.return_date == None:
-                message = 'Wybrano wypożyczenia bez zwrotu książki - wybierz ponownie'
-                break
+        if delete_loan:
+            delete_loan = Books_Clients.query.filter(Books_Clients.id.in_(delete_loan))
+            for loan in delete_loan:
+                if loan.return_date == None:
+                    message = 'Wybrano wypożyczenia bez zwrotu książki - wybierz ponownie'
+                    break
+            else:
+                try:
+                    for loan in delete_loan:
+                        db.session.delete(loan)
+                    db.session.commit()
+                    message = f'Usunięto, historia wypożyczeń książki - "{book}"'
+                    loan_list = Books_Clients.query.filter_by(book=book).order_by(Books_Clients.loan_date.desc(), 
+                    Books_Clients.return_date.desc()).all()
+                except IntegrityError:
+                    db.session.rollback()
+                    message = 'Błąd w usuwaniu historii'
         else:
-            try:
-                for loan in delete_loan:
-                    db.session.delete(loan)
-                db.session.commit()
-                message = f'Usunięto, historia wypożyczeń książki - "{book}"'
-                loan_list = Books_Clients.query.filter_by(book=book).order_by(Books_Clients.loan_date.desc(), 
-                Books_Clients.return_date.desc()).all()
-            except IntegrityError:
-                db.session.rollback()
-                message = 'Błąd w usuwaniu historii'
+            message = 'Brak zaznaczonych pozycji do usunięcia'
     
     return render_template(
         'book_loan.html',
@@ -697,23 +696,26 @@ def client_loan(id_client):
     
     if request.method == 'POST':
         delete_loan = request.form.getlist('delete_loan')
-        delete_loan = Books_Clients.query.filter(Books_Clients.id.in_(delete_loan))
-        for loan in delete_loan:
-            if loan.return_date == None:
-                message = 'Wybrano wypożyczenia bez zwrotu książki - wybierz ponownie'
-                break
+        if delete_loan:
+            delete_loan = Books_Clients.query.filter(Books_Clients.id.in_(delete_loan))
+            for loan in delete_loan:
+                if loan.return_date == None:
+                    message = 'Wybrano wypożyczenia bez zwrotu książki - wybierz ponownie'
+                    break
+            else:
+                try:
+                    for loan in delete_loan:
+                        db.session.delete(loan)
+                    db.session.commit()
+                    message = f'Usunięto, historia wypożyczeń klienta - {client}'
+                    loan_list = Books_Clients.query.filter_by(client=client).order_by(Books_Clients.loan_date.desc(), 
+                    Books_Clients.return_date.desc()).all()
+                except IntegrityError:
+                    db.session.rollback()
+                    message = 'Błąd w usuwaniu historii'
         else:
-            try:
-                for loan in delete_loan:
-                    db.session.delete(loan)
-                db.session.commit()
-                message = f'Usunięto, historia wypożyczeń klienta - {client}'
-                loan_list = Books_Clients.query.filter_by(client=client).order_by(Books_Clients.loan_date.desc(), 
-                Books_Clients.return_date.desc()).all()
-            except IntegrityError:
-                db.session.rollback()
-                message = 'Błąd w usuwaniu historii'
-    
+            message = 'Brak zaznaczonych pozycji do usunięcia'
+
     return render_template(
         'client_loan.html',
         client=client,
