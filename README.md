@@ -2,7 +2,7 @@
 
 Flask Web library application.
 
-Screenshots                                             |Photo
+Screenshots                                             |Screenshots                                             
 :------------------------------------------------------:|:------------------------------------------------------:
 Home Page                                               |Books
 ![Library_FlaskApp](../main/screenshot/home_page.png)   |![Library_FlaskApp](../main/screenshot/books.png)
