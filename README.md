@@ -28,7 +28,7 @@ Book loan                                               |Client loan
 - see details, edit or delete for each models
 - list of loan:
     - for book
-    - for client
+    - for client 
 - return borrowed book and deleting completed loans
 
 ### Technologies:
